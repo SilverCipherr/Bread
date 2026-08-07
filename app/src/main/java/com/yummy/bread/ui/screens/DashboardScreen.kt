@@ -1,0 +1,131 @@
+package com.yummy.bread.ui.screens
+
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.yummy.bread.BreadViewModel
+import com.yummy.bread.R
+import com.yummy.bread.data.Transaction
+import com.yummy.bread.ui.components.*
+import com.yummy.bread.ui.navigation.Screen
+import com.yummy.bread.ui.theme.*
+
+@Composable
+fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Background Glows
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            // Simplified glows
+        }
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(20.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            // Total Balance Card
+            item {
+                GlassCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(48.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            "Total Balance",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            "${uiState.currency.split(" ").last().removeSurrounding("(", ")")}${uiState.totalBalance}",
+                            style = MaterialTheme.typography.displayLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Box(
+                            modifier = Modifier
+                                .background(Tertiary.copy(alpha = 0.2f), CircleShape)
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                "+2.4% this week",
+                                color = Tertiary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Bento Grid
+            item {
+                val symbol = uiState.currency.split(" ").last().removeSurrounding("(", ")")
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    GlassCard(modifier = Modifier.weight(1f)) {
+                        Text("Monthly Income", style = MaterialTheme.typography.labelSmall)
+                        Text("$symbol${uiState.monthlyIncome}", style = MaterialTheme.typography.headlineMedium)
+                    }
+                    GlassCard(modifier = Modifier.weight(1f)) {
+                        Text("Monthly Spend", style = MaterialTheme.typography.labelSmall)
+                        Text("$symbol${uiState.monthlySpend}", style = MaterialTheme.typography.headlineMedium)
+                    }
+                }
+            }
+
+            // Progress Bar
+            item {
+                GlassCard(modifier = Modifier.fillMaxWidth()) {
+                    LiquidProgressBar(
+                        progress = uiState.budget.progress,
+                        remainingText = "Remaining: $${uiState.budget.remaining}"
+                    )
+                }
+            }
+
+            // Transactions Header
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Recent Transactions", style = MaterialTheme.typography.headlineSmall)
+                    MoltenButton(text = "See All", onClick = { navController.navigate(Screen.History.route) })
+                }
+            }
+
+            // Transactions List
+            items(uiState.recentTransactions) { transaction ->
+                TransactionItem(transaction)
+            }
+        }
+    }
+}
