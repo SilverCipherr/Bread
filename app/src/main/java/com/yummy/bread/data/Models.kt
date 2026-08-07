@@ -6,7 +6,8 @@ data class Transaction(
     val category: String,
     val amount: Double,
     val date: String,
-    val type: TransactionType
+    val type: TransactionType,
+    val note: String = ""
 )
 
 enum class TransactionType {
@@ -14,10 +15,11 @@ enum class TransactionType {
 }
 
 data class Budget(
-    val category: String,
-    val targetAmount: Double,
-    val currentAmount: Double
+    val monthlyIncome: Double,
+    val savingsGoal: Double,
+    val monthlySpend: Double
 ) {
-    val progress: Float get() = (currentAmount / targetAmount).toFloat().coerceIn(0f, 1f)
-    val remaining: Double get() = (targetAmount - currentAmount).coerceAtLeast(0.0)
+    val spendableLimit: Double get() = (monthlyIncome - savingsGoal).coerceAtLeast(0.0)
+    val progress: Float get() = if (spendableLimit > 0) (monthlySpend / spendableLimit).toFloat().coerceIn(0f, 1f) else 1f
+    val remaining: Double get() = (spendableLimit - monthlySpend).coerceAtLeast(0.0)
 }

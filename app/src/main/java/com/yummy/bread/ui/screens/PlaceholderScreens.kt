@@ -44,14 +44,9 @@ import com.yummy.bread.ui.theme.Tertiary
 import com.yummy.bread.BreadViewModel
 
 @Composable
-fun TransactionHistoryScreen(navController: NavHostController) {
-    val transactions = listOf(
-        Transaction("1", "Sweetgreen", "Food & Dining", -14.50, "12:30 PM", TransactionType.EXPENSE),
-        Transaction("2", "Uber", "Transport", -22.40, "9:15 AM", TransactionType.EXPENSE),
-        Transaction("3", "Tech Corp Inc.", "Salary", 3250.00, "Yesterday", TransactionType.INCOME),
-        Transaction("4", "Whole Foods", "Groceries", -142.80, "Yesterday", TransactionType.EXPENSE),
-        Transaction("5", "Apartment Management", "Rent", -1800.00, "Oct 24", TransactionType.EXPENSE)
-    )
+fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostController) {
+    val uiState by viewModel.uiState.collectAsState()
+    val symbol = uiState.currency.split(" ").last().removeSurrounding("(", ")")
 
     Column(
         modifier = Modifier
@@ -77,12 +72,18 @@ fun TransactionHistoryScreen(navController: NavHostController) {
         
         Spacer(modifier = Modifier.height(20.dp))
 
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(bottom = 20.dp)
-        ) {
-            items(transactions) { transaction ->
-                TransactionItem(transaction)
+        if (uiState.recentTransactions.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("No transactions yet", color = Color.Gray)
+            }
+        } else {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(bottom = 20.dp)
+            ) {
+                items(uiState.recentTransactions) { transaction ->
+                    TransactionItem(transaction)
+                }
             }
         }
     }
@@ -105,6 +106,7 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
     
     var name by remember { mutableStateOf(uiState.userName) }
     var balance by remember { mutableStateOf(if (uiState.totalBalance == 0.0) "" else uiState.totalBalance.toString()) }
+    var income by remember { mutableStateOf(if (uiState.monthlyIncome == 0.0) "" else uiState.monthlyIncome.toString()) }
     var goal by remember { mutableStateOf(if (uiState.monthlySavingsGoal == 0.0) "" else uiState.monthlySavingsGoal.toString()) }
     var selectedCurrency by remember { mutableStateOf(uiState.currency) }
     var selectedImageUri by remember { mutableStateOf<android.net.Uri?>(uiState.profilePictureUri) }
@@ -218,6 +220,27 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
                         )
                     )
                     TextField(
+                        value = income,
+                        onValueChange = { newValue ->
+                            if (newValue.all { it.isDigit() || it == '.' }) {
+                                income = newValue
+                            }
+                        },
+                        label = { Text("Monthly Income") },
+                        leadingIcon = { Icon(Icons.Default.Payments, contentDescription = null) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Decimal,
+                            imeAction = ImeAction.Next
+                        ),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                        )
+                    )
+                    TextField(
                         value = goal,
                         onValueChange = { newValue ->
                             if (newValue.all { it.isDigit() || it == '.' }) {
@@ -285,6 +308,7 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
                     viewModel.updateProfile(
                         name = name,
                         balance = balance.toDoubleOrNull() ?: 0.0,
+                        income = income.toDoubleOrNull() ?: 0.0,
                         goal = goal.toDoubleOrNull() ?: 0.0,
                         currency = selectedCurrency,
                         photoUri = selectedImageUri

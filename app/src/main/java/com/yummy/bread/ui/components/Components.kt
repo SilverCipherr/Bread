@@ -75,8 +75,14 @@ fun TransactionItem(transaction: Transaction) {
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(transaction.title, fontWeight = FontWeight.Bold)
-                    Text(transaction.category, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(transaction.category, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
+                    if (transaction.note.isNotBlank()) {
+                        Text(
+                            transaction.note,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
             Column(horizontalAlignment = Alignment.End) {

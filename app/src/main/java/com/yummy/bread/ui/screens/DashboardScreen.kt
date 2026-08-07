@@ -69,18 +69,6 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Box(
-                            modifier = Modifier
-                                .background(Tertiary.copy(alpha = 0.2f), CircleShape)
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
-                        ) {
-                            Text(
-                                "+2.4% this week",
-                                color = Tertiary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp
-                            )
-                        }
                     }
                 }
             }
@@ -102,10 +90,11 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
 
             // Progress Bar
             item {
+                val symbol = uiState.currency.split(" ").last().removeSurrounding("(", ")")
                 GlassCard(modifier = Modifier.fillMaxWidth()) {
                     LiquidProgressBar(
                         progress = uiState.budget.progress,
-                        remainingText = "Remaining: $${uiState.budget.remaining}"
+                        remainingText = "Remaining Spend: $symbol${uiState.budget.remaining}"
                     )
                 }
             }
@@ -118,7 +107,13 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("Recent Transactions", style = MaterialTheme.typography.headlineSmall)
-                    MoltenButton(text = "See All", onClick = { navController.navigate(Screen.History.route) })
+                     MoltenButton(text = "See All", onClick = {
+                         navController.navigate(Screen.History.route) {
+                             popUpTo(Screen.Dashboard.route) { saveState = true }
+                             launchSingleTop = true
+                             restoreState = true
+                         }
+                     })
                 }
             }
 

@@ -104,7 +104,7 @@ fun MainScreen(
         floatingActionButton = {
             if (showBars && currentRoute == Screen.Dashboard.route) {
                 FloatingActionButton(
-                    onClick = { /* Add Transaction */ },
+                    onClick = { navController.navigate(Screen.AddTransaction.route) },
                     containerColor = Primary.copy(alpha = 0.8f),
                     contentColor = Color.Black,
                     shape = CircleShape,
@@ -119,12 +119,15 @@ fun MainScreen(
                 BottomNavBar(
                     selectedRoute = currentRoute ?: Screen.Dashboard.route,
                     onRouteSelected = { route ->
-                        if (currentRoute != route) {
-                            navController.navigate(route) {
-                                popUpTo(Screen.Dashboard.route) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
+                        navController.navigate(route) {
+                            // Pop up to the dashboard to avoid building up a large stack
+                            popUpTo(Screen.Dashboard.route) {
+                                saveState = true
                             }
+                            // Avoid multiple copies of the same destination
+                            launchSingleTop = true
+                            // Restore state when reselecting a previously selected item
+                            restoreState = true
                         }
                     }
                 )

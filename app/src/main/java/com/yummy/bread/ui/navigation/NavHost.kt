@@ -22,7 +22,8 @@ fun BreadNavHost(
         ) {
             composable(Screen.Splash.route) {
                 SplashScreen {
-                    navController.navigate(Screen.ProfileSetup.route) {
+                    val startRoute = if (viewModel.uiState.value.userName.isNotBlank()) Screen.Dashboard.route else Screen.ProfileSetup.route
+                    navController.navigate(startRoute) {
                         popUpTo(Screen.Splash.route) { inclusive = true }
                     }
                 }
@@ -31,13 +32,18 @@ fun BreadNavHost(
                 DashboardContent(viewModel, navController)
             }
             composable(Screen.History.route) {
-                TransactionHistoryScreen(navController)
+                TransactionHistoryScreen(viewModel, navController)
             }
             composable(Screen.Budget.route) {
                 BudgetPlannerScreen()
             }
             composable(Screen.Insights.route) {
                 AnalyticsScreen()
+            }
+            composable(Screen.AddTransaction.route) {
+                AddTransactionScreen(viewModel) {
+                    navController.popBackStack()
+                }
             }
             composable(Screen.ProfileSetup.route) {
                 ProfileSetupScreen(viewModel) {
