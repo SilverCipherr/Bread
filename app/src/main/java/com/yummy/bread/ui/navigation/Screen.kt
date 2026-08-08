@@ -2,7 +2,9 @@ package com.yummy.bread.ui.navigation
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
-    object ProfileSetup : Screen("profile_setup")
+    object ProfileSetup : Screen("profile_setup?isNew={isNew}") {
+        fun createRoute(isNew: Boolean = false) = "profile_setup?isNew=$isNew"
+    }
     object Dashboard : Screen("home")
     object History : Screen("history")
     object Budget : Screen("budget")

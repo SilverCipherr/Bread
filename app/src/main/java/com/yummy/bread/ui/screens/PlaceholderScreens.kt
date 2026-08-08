@@ -313,17 +313,18 @@ fun AnalyticsScreen(viewModel: BreadViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
+fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetupComplete: () -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
-    val isEditing = uiState.activeProfileId != null
+    val isEditing = uiState.activeProfileId != null && !isNew
     
-    var name by remember(uiState.activeProfileId, uiState.userName) { mutableStateOf(uiState.userName) }
-    var balance by remember(uiState.activeProfileId, uiState.totalBalance) { mutableStateOf(if (uiState.totalBalance == 0.0) "" else uiState.totalBalance.toString()) }
-    var income by remember(uiState.activeProfileId, uiState.monthlyIncome) { mutableStateOf(if (uiState.monthlyIncome == 0.0) "" else uiState.monthlyIncome.toString()) }
-    var goal by remember(uiState.activeProfileId, uiState.monthlySavingsGoal) { mutableStateOf(if (uiState.monthlySavingsGoal == 0.0) "" else uiState.monthlySavingsGoal.toString()) }
-    var pin by remember(uiState.activeProfileId) { mutableStateOf("") }
-    var selectedCurrency by remember(uiState.activeProfileId, uiState.currency) { mutableStateOf(uiState.currency) }
-    var selectedImageUri by remember(uiState.activeProfileId, uiState.profilePictureUri) { mutableStateOf<android.net.Uri?>(uiState.profilePictureUri) }
+    // Use isNew as a key for remember to force reset when creating a new account
+    var name by remember(uiState.activeProfileId, isNew) { mutableStateOf(if (isNew) "" else uiState.userName) }
+    var balance by remember(uiState.activeProfileId, isNew) { mutableStateOf(if (isNew || uiState.totalBalance == 0.0) "" else uiState.totalBalance.toString()) }
+    var income by remember(uiState.activeProfileId, isNew) { mutableStateOf(if (isNew || uiState.monthlyIncome == 0.0) "" else uiState.monthlyIncome.toString()) }
+    var goal by remember(uiState.activeProfileId, isNew) { mutableStateOf(if (isNew || uiState.monthlySavingsGoal == 0.0) "" else uiState.monthlySavingsGoal.toString()) }
+    var pin by remember(uiState.activeProfileId, isNew) { mutableStateOf("") }
+    var selectedCurrency by remember(uiState.activeProfileId, isNew) { mutableStateOf(if (isNew) "USD ($)" else uiState.currency) }
+    var selectedImageUri by remember(uiState.activeProfileId, isNew) { mutableStateOf<android.net.Uri?>(if (isNew) null else uiState.profilePictureUri) }
     
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),

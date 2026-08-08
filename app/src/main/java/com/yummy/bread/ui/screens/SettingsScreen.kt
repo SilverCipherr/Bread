@@ -34,6 +34,7 @@ import com.yummy.bread.ui.theme.Secondary
 fun SettingsScreen(
     viewModel: BreadViewModel,
     onNavigateToProfileSetup: () -> Unit,
+    onNavigateToAddAccount: () -> Unit,
     onNavigateToSecurity: () -> Unit,
     onNavigateToAbout: () -> Unit,
     onLogout: () -> Unit
@@ -123,7 +124,7 @@ fun SettingsScreen(
             GlassCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onLogout() }, // Use onLogout to go back to Profile Selector
+                    .clickable { onLogout() }, 
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
@@ -148,10 +149,7 @@ fun SettingsScreen(
             
             // Add Account Button
             OutlinedButton(
-                onClick = { 
-                    viewModel.logout()
-                    onNavigateToProfileSetup() 
-                },
+                onClick = onNavigateToAddAccount,
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp),
                 border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))

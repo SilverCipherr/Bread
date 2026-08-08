@@ -34,7 +34,7 @@ fun BreadNavHost(
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
                     } else {
-                        navController.navigate(Screen.ProfileSetup.route) {
+                        navController.navigate(Screen.ProfileSetup.createRoute(true)) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
                     }
@@ -48,8 +48,7 @@ fun BreadNavHost(
                         navController.navigate(Screen.Lock.createRoute(profileId))
                     },
                     onAddAccount = {
-                        viewModel.logout() // Ensure we are in "Create" mode
-                        navController.navigate(Screen.ProfileSetup.route)
+                        navController.navigate(Screen.ProfileSetup.createRoute(true))
                     }
                 )
             }
@@ -65,7 +64,6 @@ fun BreadNavHost(
                     onSuccess = {
                         viewModel.login(profileId)
                         navController.navigate(Screen.Dashboard.route) {
-                            // Clear everything up to the splash screen to make Dashboard the new root
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
                     }
@@ -87,11 +85,11 @@ fun BreadNavHost(
             composable(Screen.Settings.route) {
                 SettingsScreen(
                     viewModel = viewModel,
-                    onNavigateToProfileSetup = { navController.navigate(Screen.ProfileSetup.route) },
+                    onNavigateToProfileSetup = { navController.navigate(Screen.ProfileSetup.createRoute(false)) },
+                    onNavigateToAddAccount = { navController.navigate(Screen.ProfileSetup.createRoute(true)) },
                     onNavigateToSecurity = { navController.navigate(Screen.SecurityPrivacy.route) },
                     onNavigateToAbout = { navController.navigate(Screen.About.route) },
                     onLogout = {
-                        // Just navigate to the selector, allowing "Back" to work
                         navController.navigate(Screen.ProfileSelector.route)
                     }
                 )
@@ -107,8 +105,12 @@ fun BreadNavHost(
                     navController.popBackStack()
                 }
             }
-            composable(Screen.ProfileSetup.route) {
-                ProfileSetupScreen(viewModel) {
+            composable(
+                route = Screen.ProfileSetup.route,
+                arguments = listOf(navArgument("isNew") { type = NavType.BoolType; defaultValue = false })
+            ) { backStackEntry ->
+                val isNew = backStackEntry.arguments?.getBoolean("isNew") ?: false
+                ProfileSetupScreen(viewModel, isNew) {
                     navController.navigate(Screen.Dashboard.route) {
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     }

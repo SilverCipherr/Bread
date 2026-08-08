@@ -8,9 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -74,86 +71,90 @@ fun SecurityLockScreen(
         authenticateBiometrically()
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
-            .padding(horizontal = 24.dp, vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+            .padding(24.dp)
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = 40.dp)
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                "Welcome Back,",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                profile.name,
-                style = MaterialTheme.typography.displayLarge,
-                color = Primary,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        // PIN Indicators
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            repeat(4) { index ->
-                val filled = index < enteredPin.length
-                Box(
-                    modifier = Modifier
-                        .size(16.dp)
-                        .clip(CircleShape)
-                        .background(if (filled) Primary else Color.White.copy(alpha = 0.1f))
-                        .border(1.dp, if (filled) Primary else Color.White.copy(alpha = 0.2f), CircleShape)
+            // Header
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(top = 40.dp)
+            ) {
+                Text(
+                    "Welcome Back,",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    profile.name,
+                    style = MaterialTheme.typography.displayLarge,
+                    color = Primary,
+                    fontWeight = FontWeight.Bold
                 )
             }
-        }
 
-        // Tactile Keypad
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "Fingerprint", "0", "Delete")
-            
-            // Using a simple Column + Row layout for better height control than LazyVerticalGrid
-            keys.chunked(3).forEach { rowKeys ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    rowKeys.forEach { key ->
-                        KeypadButton(
-                            key = key,
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                when (key) {
-                                    "Delete" -> if (enteredPin.isNotEmpty()) enteredPin = enteredPin.dropLast(1)
-                                    "Fingerprint" -> authenticateBiometrically()
-                                    else -> {
-                                        if (enteredPin.length < 4) {
-                                            enteredPin += key
-                                            if (enteredPin.length == 4) {
-                                                if (enteredPin == profile.pin) {
-                                                    onSuccess()
-                                                } else {
-                                                    enteredPin = ""
+            Spacer(modifier = Modifier.weight(1f))
+
+            // PIN Indicators
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                repeat(4) { index ->
+                    val filled = index < enteredPin.length
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clip(CircleShape)
+                            .background(if (filled) Primary else Color.White.copy(alpha = 0.1f))
+                            .border(1.dp, if (filled) Primary else Color.White.copy(alpha = 0.2f), CircleShape)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Keypad
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "Fingerprint", "0", "Delete")
+                keys.chunked(3).forEach { rowKeys ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        rowKeys.forEach { key ->
+                            KeypadButton(
+                                key = key,
+                                modifier = Modifier.weight(1f),
+                                onClick = {
+                                    when (key) {
+                                        "Delete" -> if (enteredPin.isNotEmpty()) enteredPin = enteredPin.dropLast(1)
+                                        "Fingerprint" -> authenticateBiometrically()
+                                        else -> {
+                                            if (enteredPin.length < 4) {
+                                                enteredPin += key
+                                                if (enteredPin.length == 4) {
+                                                    if (enteredPin == profile.pin) {
+                                                        onSuccess()
+                                                    } else {
+                                                        enteredPin = ""
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
