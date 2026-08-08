@@ -35,10 +35,10 @@ fun BreadNavHost(
                 TransactionHistoryScreen(viewModel, navController)
             }
             composable(Screen.Budget.route) {
-                BudgetPlannerScreen()
+                BudgetPlannerScreen(viewModel)
             }
             composable(Screen.Insights.route) {
-                AnalyticsScreen()
+                AnalyticsScreen(viewModel)
             }
             composable(Screen.AddTransaction.route) {
                 AddTransactionScreen(viewModel) {

@@ -10,17 +10,21 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
@@ -31,22 +35,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import androidx.navigation.NavHostController
+import com.yummy.bread.BreadViewModel
+import com.yummy.bread.data.CategoryBudget
 import com.yummy.bread.data.Transaction
 import com.yummy.bread.data.TransactionType
-import com.yummy.bread.ui.components.GlassCard
-import com.yummy.bread.ui.components.MoltenButton
-import com.yummy.bread.ui.components.TransactionItem
+import com.yummy.bread.ui.components.*
 import com.yummy.bread.ui.theme.Background
 import com.yummy.bread.ui.theme.Primary
 import com.yummy.bread.ui.theme.Secondary
 import com.yummy.bread.ui.theme.Tertiary
 
-import com.yummy.bread.BreadViewModel
-
 @Composable
 fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostController) {
     val uiState by viewModel.uiState.collectAsState()
-    val symbol = uiState.currency.split(" ").last().removeSurrounding("(", ")")
+    var searchQuery by remember { mutableStateOf("") }
+    
+    val filteredTransactions = remember(searchQuery, uiState.recentTransactions) {
+        uiState.recentTransactions.filter { 
+            it.category.contains(searchQuery, ignoreCase = true) || 
+            it.note.contains(searchQuery, ignoreCase = true)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -62,26 +71,39 @@ fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostCo
         )
         Spacer(modifier = Modifier.height(20.dp))
         
-        // Search bar placeholder
-        GlassCard(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text("Search transactions...", color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
+        // Real search bar
+        TextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            placeholder = { Text("Search transactions...", color = MaterialTheme.colorScheme.onSurfaceVariant) },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp)),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White.copy(alpha = 0.05f),
+                unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            singleLine = true
+        )
         
         Spacer(modifier = Modifier.height(20.dp))
 
-        if (uiState.recentTransactions.isEmpty()) {
+        if (filteredTransactions.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("No transactions yet", color = Color.Gray)
+                Text(
+                    if (searchQuery.isEmpty()) "No transactions yet" else "No matching transactions",
+                    color = Color.Gray
+                )
             }
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(bottom = 20.dp)
             ) {
-                items(uiState.recentTransactions) { transaction ->
+                items(filteredTransactions) { transaction ->
                     TransactionItem(transaction)
                 }
             }
@@ -90,13 +112,202 @@ fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostCo
 }
 
 @Composable
-fun BudgetPlannerScreen() {
-    PlaceholderScreen("Budget Planner")
+fun BudgetPlannerScreen(viewModel: BreadViewModel) {
+    val uiState by viewModel.uiState.collectAsState()
+    val symbol = uiState.currency.split(" ").last().removeSurrounding("(", ")")
+    
+    val totalBudget = uiState.monthlyIncome - uiState.monthlySavingsGoal
+
+    var showDialog by remember { mutableStateOf(false) }
+    var editingBudget by remember { mutableStateOf<CategoryBudget?>(null) }
+
+    if (showDialog) {
+        BudgetDialog(
+            onDismiss = { 
+                showDialog = false
+                editingBudget = null
+            },
+            onConfirm = { category, limit, icon ->
+                if (editingBudget != null) {
+                    viewModel.updateCategoryBudget(category, limit)
+                } else {
+                    viewModel.addCategoryBudget(category, limit, icon)
+                }
+                showDialog = false
+                editingBudget = null
+            },
+            initialBudget = editingBudget,
+            isEditing = editingBudget != null
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Background)
+            .padding(horizontal = 20.dp)
+    ) {
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            "Budget",
+            style = MaterialTheme.typography.displayLarge,
+            color = Primary
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        TotalBudgetSummaryCard(
+            spent = uiState.monthlySpend,
+            total = totalBudget,
+            symbol = symbol
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        Text(
+            "Categories",
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(bottom = 80.dp)
+        ) {
+            items(uiState.categoryBudgets) { budget ->
+                CategoryBudgetCard(
+                    budget = budget, 
+                    symbol = symbol,
+                    onEditClick = {
+                        editingBudget = budget
+                        showDialog = true
+                    },
+                    onDeleteClick = {
+                        viewModel.deleteCategoryBudget(budget.category)
+                    }
+                )
+            }
+            
+            item {
+                OutlinedButton(
+                    onClick = { showDialog = true },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = CircleShape,
+                    border = BorderStroke(1.dp, Primary.copy(alpha = 0.3f))
+                ) {
+                    Icon(Icons.Default.AddCircle, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Set New Budget", color = Primary)
+                }
+            }
+        }
+    }
 }
 
 @Composable
-fun AnalyticsScreen() {
-    PlaceholderScreen("Analytics Insights")
+fun AnalyticsScreen(viewModel: BreadViewModel) {
+    val uiState by viewModel.uiState.collectAsState()
+    val symbol = uiState.currency.split(" ").last().removeSurrounding("(", ")")
+    
+    val totalSpent = uiState.spendingBreakdown.sumOf { it.amount }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Background)
+            .padding(horizontal = 20.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Spacer(modifier = Modifier.height(20.dp))
+        
+        // Header
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                "Spending Overview",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                "Your financial breakdown for this period.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        TimeToggle(
+            selectedRange = uiState.selectedTimeRange,
+            onRangeSelected = { viewModel.updateTimeRange(it) }
+        )
+        
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        // Donut Chart Card
+        GlassCard(modifier = Modifier.fillMaxWidth()) {
+            DonutChart(
+                breakdown = uiState.spendingBreakdown,
+                totalText = totalSpent.toInt().toString(),
+                symbol = symbol
+            )
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
+            // Legend
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                uiState.spendingBreakdown.chunked(2).forEach { rowItems ->
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        rowItems.forEach { item ->
+                            Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .clip(CircleShape)
+                                        .background(item.color)
+                                        .shadow(8.dp, CircleShape)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Column {
+                                    Text(item.category, style = MaterialTheme.typography.labelMedium, color = Color.White)
+                                    Text("${(item.percentage * 100).toInt()}%", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                }
+                            }
+                        }
+                        if (rowItems.size == 1) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                }
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // Balance Trend Card
+        GlassCard(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text("Balance Trend", style = MaterialTheme.typography.labelLarge, color = Color.White, fontWeight = FontWeight.Bold)
+                Surface(
+                    color = Tertiary.copy(alpha = 0.1f),
+                    shape = CircleShape,
+                    border = BorderStroke(1.dp, Tertiary.copy(alpha = 0.2f))
+                ) {
+                    Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.AutoMirrored.Filled.TrendingUp, contentDescription = null, tint = Tertiary, modifier = Modifier.size(14.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(uiState.trendPercentage, style = MaterialTheme.typography.labelSmall, color = Tertiary)
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            BalanceTrendChart(points = uiState.balanceTrend)
+        }
+        
+        Spacer(modifier = Modifier.height(100.dp))
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

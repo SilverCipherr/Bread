@@ -3,15 +3,15 @@ package com.yummy.bread
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
-import com.yummy.bread.data.BreadRepository
-import com.yummy.bread.data.Budget
-import com.yummy.bread.data.Transaction
-import com.yummy.bread.data.TransactionType
+import com.yummy.bread.data.*
+import com.yummy.bread.ui.theme.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.*
 
 data class BreadUiState(
     val userName: String = "",
@@ -21,7 +21,12 @@ data class BreadUiState(
     val monthlySavingsGoal: Double = 0.0,
     val currency: String = "USD ($)",
     val profilePictureUri: Uri? = null,
-    val recentTransactions: List<Transaction> = emptyList()
+    val recentTransactions: List<Transaction> = emptyList(),
+    val categoryBudgets: List<CategoryBudget> = emptyList(),
+    val spendingBreakdown: List<CategorySpend> = emptyList(),
+    val balanceTrend: List<TrendPoint> = emptyList(),
+    val selectedTimeRange: String = "Monthly",
+    val trendPercentage: String = "+0.0%"
 ) {
     val budget: Budget get() = Budget(monthlyIncome, monthlySavingsGoal, monthlySpend)
 }
@@ -31,6 +36,23 @@ class BreadViewModel(application: Application) : AndroidViewModel(application) {
     
     private val _uiState = MutableStateFlow(repository.loadState())
     val uiState: StateFlow<BreadUiState> = _uiState.asStateFlow()
+
+    init {
+        recalculateBreakdown()
+    }
+
+    private val categoryColors = mapOf(
+        "Food" to Primary,
+        "Transport" to Secondary,
+        "Shopping" to Tertiary,
+        "Utilities" to Color(0xFFFFA726), // Orange
+        "Invest" to Color(0xFF66BB6A), // Green
+        "Gift" to Color(0xFFEC407A), // Pink
+        "Salary" to Color(0xFF26C6DA), // Cyan
+        "Groceries" to Color(0xFFAB47BC), // Purple
+        "Entertainment" to Color(0xFFFF7043), // Coral
+        "Other" to Color(0xFF90A4AE) // Blue Grey
+    )
 
     fun updateProfile(
         name: String,
@@ -44,7 +66,7 @@ class BreadViewModel(application: Application) : AndroidViewModel(application) {
             try {
                 val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 getApplication<Application>().contentResolver.takePersistableUriPermission(uri, flags)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Ignore if not a content URI or permission cannot be taken
             }
         }
@@ -58,20 +80,137 @@ class BreadViewModel(application: Application) : AndroidViewModel(application) {
                 profilePictureUri = photoUri
             ).also { newState -> repository.saveState(newState) }
         }
+        recalculateBreakdown()
     }
 
     fun addTransaction(transaction: Transaction) {
         _uiState.update { currentState ->
-            val updatedTransactions = (listOf(transaction) + currentState.recentTransactions).take(10)
+            val updatedTransactions = (listOf(transaction) + currentState.recentTransactions).take(100)
             val balanceChange = if (transaction.type == TransactionType.INCOME) transaction.amount else -transaction.amount
             
             val spendIncrease = if (transaction.type == TransactionType.EXPENSE) transaction.amount else 0.0
             
+            // Update category budgets if it's an expense
+            val updatedBudgets = if (transaction.type == TransactionType.EXPENSE) {
+                currentState.categoryBudgets.map { catBudget ->
+                    if (catBudget.category == transaction.category) {
+                        catBudget.copy(spent = catBudget.spent + transaction.amount)
+                    } else {
+                        catBudget
+                    }
+                }
+            } else currentState.categoryBudgets
+
             currentState.copy(
                 recentTransactions = updatedTransactions,
                 totalBalance = currentState.totalBalance + balanceChange,
-                monthlySpend = currentState.monthlySpend + spendIncrease
+                monthlySpend = currentState.monthlySpend + spendIncrease,
+                categoryBudgets = updatedBudgets
             ).also { newState -> repository.saveState(newState) }
+        }
+        recalculateBreakdown()
+    }
+    
+    fun updateCategoryBudget(category: String, newLimit: Double) {
+        _uiState.update { currentState ->
+            val updatedBudgets = currentState.categoryBudgets.map { 
+                if (it.category == category) it.copy(limit = newLimit) else it
+            }
+            currentState.copy(categoryBudgets = updatedBudgets)
+                .also { repository.saveState(it) }
+        }
+    }
+
+    fun addCategoryBudget(category: String, limit: Double, icon: String) {
+        _uiState.update { currentState ->
+            if (currentState.categoryBudgets.any { it.category == category }) return@update currentState
+            
+            val initialSpent = currentState.recentTransactions
+                .filter { it.category == category && it.type == TransactionType.EXPENSE }
+                .sumOf { it.amount }
+
+            val newBudget = CategoryBudget(category, limit, initialSpent, icon)
+            val updatedBudgets = currentState.categoryBudgets + newBudget
+            currentState.copy(categoryBudgets = updatedBudgets)
+                .also { repository.saveState(it) }
+        }
+    }
+
+    fun deleteCategoryBudget(category: String) {
+        _uiState.update { currentState ->
+            val updatedBudgets = currentState.categoryBudgets.filter { it.category != category }
+            currentState.copy(categoryBudgets = updatedBudgets)
+                .also { repository.saveState(it) }
+        }
+    }
+
+    fun updateTimeRange(range: String) {
+        _uiState.update { it.copy(selectedTimeRange = range) }
+        recalculateBreakdown()
+    }
+
+    private fun recalculateBreakdown() {
+        _uiState.update { currentState ->
+            val now = System.currentTimeMillis()
+            val startTime = when (currentState.selectedTimeRange) {
+                "Weekly" -> now - 7 * 24 * 60 * 60 * 1000L
+                "Monthly" -> now - 30 * 24 * 60 * 60 * 1000L
+                "Yearly" -> now - 365 * 24 * 60 * 60 * 1000L
+                else -> 0L
+            }
+
+            val filteredTransactions = currentState.recentTransactions.filter { it.timestamp >= startTime }
+            val expenses = filteredTransactions.filter { it.type == TransactionType.EXPENSE }
+            val totalExpense = expenses.sumOf { it.amount }
+            
+            val breakdown = expenses.groupBy { it.category }
+                .map { (category, transactions) ->
+                    val categoryAmount = transactions.sumOf { it.amount }
+                    CategorySpend(
+                        category = category,
+                        amount = categoryAmount,
+                        percentage = if (totalExpense > 0) (categoryAmount / totalExpense).toFloat() else 0f,
+                        color = categoryColors[category] ?: Color.Gray
+                    )
+                }
+                .sortedByDescending { it.amount }
+
+            // Generate trend points
+            // For simplicity, we'll divide the period into 5 points
+            val pointsCount = 5
+            val period = now - startTime
+            val trend = mutableListOf<TrendPoint>()
+            
+            var currentBalanceAtPoint = currentState.totalBalance
+            // We go backwards from now
+            for (i in (pointsCount - 1) downTo 0) {
+                val pointTime = startTime + (i.toFloat() / (pointsCount - 1) * period).toLong()
+                val label = when (currentState.selectedTimeRange) {
+                    "Weekly" -> "Day ${i + 1}"
+                    "Monthly" -> if (i == 0) "1st" else if (i == 2) "15th" else if (i == 4) "30th" else ""
+                    "Yearly" -> "Q${i + 1}"
+                    else -> ""
+                }
+                
+                // Balance at this point is totalBalance minus all transactions after this point
+                val transactionsAfterPoint = currentState.recentTransactions.filter { it.timestamp > pointTime }
+                val balanceChangeAfter = transactionsAfterPoint.sumOf { 
+                    if (it.type == TransactionType.INCOME) it.amount else -it.amount 
+                }
+                
+                trend.add(0, TrendPoint(label, (currentState.totalBalance - balanceChangeAfter).toFloat()))
+            }
+
+            val firstVal = trend.firstOrNull()?.value ?: 0f
+            val lastVal = trend.lastOrNull()?.value ?: 0f
+            val diff = if (firstVal != 0f) ((lastVal - firstVal) / firstVal) * 100 else 0f
+            val trendPct = (if (diff >= 0) "+" else "") + String.format("%.1f%%", diff)
+
+            currentState.copy(
+                spendingBreakdown = breakdown,
+                balanceTrend = trend,
+                trendPercentage = trendPct
+            )
         }
     }
 }

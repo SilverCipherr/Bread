@@ -7,7 +7,8 @@ data class Transaction(
     val amount: Double,
     val date: String,
     val type: TransactionType,
-    val note: String = ""
+    val note: String = "",
+    val timestamp: Long = System.currentTimeMillis()
 )
 
 enum class TransactionType {
@@ -23,3 +24,26 @@ data class Budget(
     val progress: Float get() = if (spendableLimit > 0) (monthlySpend / spendableLimit).toFloat().coerceIn(0f, 1f) else 1f
     val remaining: Double get() = (spendableLimit - monthlySpend).coerceAtLeast(0.0)
 }
+
+data class CategoryBudget(
+    val category: String,
+    val limit: Double,
+    val spent: Double,
+    val icon: String
+) {
+    val progress: Float get() = if (limit > 0) (spent / limit).toFloat().coerceIn(0f, 1f) else 0f
+    val remaining: Double get() = (limit - spent).coerceAtLeast(0.0)
+    val isOverBudget: Boolean get() = spent > limit
+}
+
+data class CategorySpend(
+    val category: String,
+    val amount: Double,
+    val percentage: Float,
+    val color: androidx.compose.ui.graphics.Color
+)
+
+data class TrendPoint(
+    val label: String,
+    val value: Float
+)

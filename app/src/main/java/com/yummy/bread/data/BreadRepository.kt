@@ -29,10 +29,23 @@ class BreadRepository(context: Context) {
                     put("date", transaction.date)
                     put("type", transaction.type.name)
                     put("note", transaction.note)
+                    put("timestamp", transaction.timestamp)
                 }
                 transactionsArray.put(json)
             }
             putString("transactions", transactionsArray.toString())
+
+            val budgetsArray = JSONArray()
+            state.categoryBudgets.forEach { budget ->
+                val json = JSONObject().apply {
+                    put("category", budget.category)
+                    put("limit", budget.limit)
+                    put("spent", budget.spent)
+                    put("icon", budget.icon)
+                }
+                budgetsArray.put(json)
+            }
+            putString("category_budgets", budgetsArray.toString())
             apply()
         }
     }
@@ -54,7 +67,25 @@ class BreadRepository(context: Context) {
                         amount = obj.getDouble("amount"),
                         date = obj.getString("date"),
                         type = TransactionType.valueOf(obj.getString("type")),
-                        note = obj.optString("note", "")
+                        note = obj.optString("note", ""),
+                        timestamp = obj.optLong("timestamp", System.currentTimeMillis())
+                    )
+                )
+            }
+        }
+
+        val budgetsJson = prefs.getString("category_budgets", null)
+        val categoryBudgets = mutableListOf<CategoryBudget>()
+        if (budgetsJson != null) {
+            val array = JSONArray(budgetsJson)
+            for (i in 0 until array.length()) {
+                val obj = array.getJSONObject(i)
+                categoryBudgets.add(
+                    CategoryBudget(
+                        category = obj.getString("category"),
+                        limit = obj.getDouble("limit"),
+                        spent = obj.getDouble("spent"),
+                        icon = obj.getString("icon")
                     )
                 )
             }
@@ -68,7 +99,8 @@ class BreadRepository(context: Context) {
             monthlySavingsGoal = prefs.getFloat("monthly_savings_goal", 0f).toDouble(),
             currency = prefs.getString("currency", "USD ($)") ?: "USD ($)",
             profilePictureUri = prefs.getString("profile_picture_uri", null)?.let { Uri.parse(it) },
-            recentTransactions = transactions
+            recentTransactions = transactions,
+            categoryBudgets = categoryBudgets
         )
     }
 }

@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ReceiptLong
+import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -40,12 +40,16 @@ fun GlassCard(
 @Composable
 fun TransactionItem(transaction: Transaction) {
     val icon = when (transaction.category) {
-        "Food & Dining" -> Icons.Default.Restaurant
+        "Food" -> Icons.Default.Restaurant
         "Transport" -> Icons.Default.DirectionsCar
         "Shopping" -> Icons.Default.ShoppingBag
-        "Work", "Salary" -> Icons.Default.Payments
+        "Salary" -> Icons.Default.Payments
         "Groceries" -> Icons.Default.ShoppingCart
-        "Rent" -> Icons.Default.Home
+        "Entertainment" -> Icons.Default.Movie
+        "Utilities" -> Icons.Default.ElectricBolt
+        "Invest" -> Icons.AutoMirrored.Filled.TrendingUp
+        "Gift" -> Icons.Default.CardGiftcard
+        "Other" -> Icons.Default.Category
         else -> Icons.AutoMirrored.Filled.ReceiptLong
     }
 
@@ -113,7 +117,7 @@ fun MoltenButton(
     ) {
         Text(
             text = text,
-            color = Color.White,
+            color = Color.Black,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp
         )
