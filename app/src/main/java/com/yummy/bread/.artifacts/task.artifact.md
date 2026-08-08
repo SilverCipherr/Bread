@@ -1,5 +1,7 @@
-- [x] Build Configuration for Dual Installation
-    - [x] Add `debug` build type with `applicationIdSuffix` and `versionNameSuffix` in `app/build.gradle.kts`
+- [x] Asset Generation for New Logo
+    - [x] Resize `bread_logo.png` to 512x512
+    - [x] Generate standard launcher icons (MDPI to XXXHDPI)
+    - [x] Generate adaptive icon foregrounds (MDPI to XXXHDPI)
 - [x] Verification
-    - [x] Run `./gradlew :app:assembleDebug`
-    - [x] Run `./gradlew :app:assembleRelease`
+    - [x] Run `./gradlew :app:packageDebugResources`
+    - [x] Check resource integrity
