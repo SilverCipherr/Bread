@@ -62,16 +62,16 @@ fun AddTransactionScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("New Transaction", style = MaterialTheme.typography.headlineMedium) },
+                title = { Text("New Transaction", style = MaterialTheme.typography.headlineMedium, color = Color.White) },
                 navigationIcon = {
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.Close, contentDescription = "Close")
+                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background
+        containerColor = Color.Transparent
     ) { padding ->
         Column(
             modifier = Modifier

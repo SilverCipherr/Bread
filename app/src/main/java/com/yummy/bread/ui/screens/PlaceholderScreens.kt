@@ -62,7 +62,6 @@ fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostCo
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
             .padding(horizontal = 20.dp)
     ) {
         Spacer(modifier = Modifier.height(20.dp))
@@ -145,7 +144,6 @@ fun BudgetPlannerScreen(viewModel: BreadViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
             .padding(horizontal = 20.dp)
     ) {
         Spacer(modifier = Modifier.height(20.dp))
@@ -216,7 +214,6 @@ fun AnalyticsScreen(viewModel: BreadViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
             .padding(horizontal = 20.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -336,7 +333,6 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetu
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
     ) {
         Column(
             modifier = Modifier

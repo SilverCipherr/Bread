@@ -22,16 +22,18 @@ val OnError = Color(0xFF690005)
 val ErrorContainer = Color(0xFF93000A)
 val OnErrorContainer = Color(0xFFFFDAD6)
 
-val Background = Color(0xFF0B1326)
-val OnBackground = Color(0xFFDAE2FD)
-val Surface = Color(0xFF0B1326)
-val OnSurface = Color(0xFFDAE2FD)
-val SurfaceVariant = Color(0xFF2D3449)
-val OnSurfaceVariant = Color(0xFFCBC3D7)
-val Outline = Color(0xFF958EA0)
-val OutlineVariant = Color(0xFF494454)
+val Background = Color(0xFF010101) // Deepest black for better glass contrast
+val OnBackground = Color(0xFFFFFFFF)
+val Surface = Color(0xFF0F0F0F)
+val OnSurface = Color(0xFFFFFFFF)
+val SurfaceVariant = Color(0xFF1C1C1E)
+val OnSurfaceVariant = Color(0xFFEBEBF5)
+val Outline = Color(0x4DFFFFFF) // iOS-style thin borders
+val OutlineVariant = Color(0x26FFFFFF)
 
-// Molten Glass Glows
-val Glow1 = Color(0x66D0BCFF) // Electric Violet
-val Glow2 = Color(0x4D4EDEA3) // Emerald Glow
-val Glow3 = Color(0x4D0566D9) // Ocean Blue
+// iOS 17 Vibrant Glows
+val Glow1 = Color(0xFF6a0478) // Deep Midnight
+val Glow2 = Color(0xFFd60d2e) // Deep Indigo
+val Glow3 = Color(0xFF27cfc6) // Rich Violet
+val Glow4 = Color(0xFF0800ff) // Vivid Lavender
+val GlassBase = Color(0x1AFFFFFF) // Super thin base white for glass

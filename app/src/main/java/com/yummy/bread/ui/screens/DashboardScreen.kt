@@ -37,14 +37,9 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
     val uiState by viewModel.uiState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Background Glows
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            // Simplified glows
-        }
-
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(20.dp),
+            contentPadding = PaddingValues(top = 24.dp, bottom = 100.dp, start = 20.dp, end = 20.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             // Total Balance Card

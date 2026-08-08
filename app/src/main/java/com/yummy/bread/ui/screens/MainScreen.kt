@@ -30,6 +30,9 @@ import com.yummy.bread.ui.navigation.Screen
 import com.yummy.bread.ui.theme.Background
 import com.yummy.bread.ui.theme.Primary
 
+import androidx.compose.foundation.border
+import com.yummy.bread.ui.components.GlassBackground
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
@@ -46,91 +49,100 @@ fun MainScreen(
                    currentRoute != Screen.ProfileSelector.route &&
                    currentRoute?.startsWith("lock") != true
 
-    Scaffold(
-        topBar = {
-            if (showBars) {
-                CenterAlignedTopAppBar(
-                    title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(
-                                painter = painterResource(id = R.drawable.bread_logo),
-                                contentDescription = "Logo",
-                                modifier = Modifier.size(40.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                "Bread",
-                                style = MaterialTheme.typography.headlineLarge,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
-                            Box(
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.Gray),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                if (uiState.profilePictureUri != null) {
-                                    Image(
-                                        painter = rememberAsyncImagePainter(uiState.profilePictureUri),
-                                        contentDescription = "Profile",
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                } else {
-                                    Icon(
-                                        Icons.Default.Person,
-                                        contentDescription = "Profile",
-                                        tint = Color.White
-                                    )
+    GlassBackground {
+        Scaffold(
+            topBar = {
+                if (showBars) {
+                    CenterAlignedTopAppBar(
+                        title = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.bread_logo),
+                                    contentDescription = "Logo",
+                                    modifier = Modifier.size(40.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    "Bread",
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.White.copy(alpha = 0.1f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    if (uiState.profilePictureUri != null) {
+                                        Image(
+                                            painter = rememberAsyncImagePainter(uiState.profilePictureUri),
+                                            contentDescription = "Profile",
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    } else {
+                                        Icon(
+                                            Icons.Default.Person,
+                                            contentDescription = "Profile",
+                                            tint = Color.White
+                                        )
+                                    }
                                 }
                             }
-                        }
-                    },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Color.Transparent
-                    ),
-                    modifier = Modifier.glassPanelHeavy(shape = RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
-                )
-            }
-        },
-        floatingActionButton = {
-            if (showBars && currentRoute == Screen.Dashboard.route) {
-                FloatingActionButton(
-                    onClick = { navController.navigate(Screen.AddTransaction.route) },
-                    containerColor = Primary.copy(alpha = 0.8f),
-                    contentColor = Color.Black,
-                    shape = CircleShape,
-                    modifier = Modifier.size(64.dp)
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Add", modifier = Modifier.size(32.dp))
+                        },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = Color.Transparent
+                        ),
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .glassPanelHeavy(shape = RoundedCornerShape(24.dp))
+                    )
                 }
-            }
-        },
-        bottomBar = {
-            if (showBars) {
-                BottomNavBar(
-                    selectedRoute = currentRoute ?: Screen.Dashboard.route,
-                    onRouteSelected = { route ->
-                        if (currentRoute != route) {
-                            navController.navigate(route) {
-                                popUpTo(Screen.Dashboard.route) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
+            },
+            floatingActionButton = {
+                if (showBars && currentRoute == Screen.Dashboard.route) {
+                    FloatingActionButton(
+                        onClick = { navController.navigate(Screen.AddTransaction.route) },
+                        containerColor = Primary.copy(alpha = 0.9f),
+                        contentColor = Color.White,
+                        shape = CircleShape,
+                        modifier = Modifier
+                            .size(64.dp)
+                            .border(0.5.dp, Color.White.copy(alpha = 0.3f), CircleShape)
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = "Add", modifier = Modifier.size(32.dp))
                     }
-                )
-            }
-        },
-        containerColor = Background
-    ) { padding ->
-        content(padding)
+                }
+            },
+            bottomBar = {
+                if (showBars) {
+                    Box(modifier = Modifier.padding(16.dp)) {
+                        BottomNavBar(
+                            selectedRoute = currentRoute ?: Screen.Dashboard.route,
+                            onRouteSelected = { route ->
+                                if (currentRoute != route) {
+                                    navController.navigate(route) {
+                                        popUpTo(Screen.Dashboard.route) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            },
+            containerColor = Color.Transparent
+        ) { padding ->
+            content(padding)
+        }
     }
 }

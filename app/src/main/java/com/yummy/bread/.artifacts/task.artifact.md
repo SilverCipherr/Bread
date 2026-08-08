@@ -1,0 +1,8 @@
+- [x] Initial UI Overhaul
+- [x] Full-Screen Immersive Gradient Attempt
+- [x] Fix Circular Gradient and Enhance Vibrancy
+    - [x] Restore vibrant colors in `Color.kt`
+    - [x] Update `GlassBackground.kt` to use `drawRect` for full-screen blending
+- [x] Verification
+    - [x] Build project
+    - [x] Verify vibrant full-screen background

@@ -12,43 +12,63 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.RenderEffect
+import androidx.compose.ui.graphics.asComposeRenderEffect
+import android.graphics.RenderEffect as AndroidRenderEffect
+import android.os.Build
+
 fun Modifier.glassPanel(
     shape: Shape = RoundedCornerShape(24.dp),
-    opacity: Float = 0.4f,
-    borderOpacity: Float = 0.1f,
-    padding: Dp = 0.dp
+    opacity: Float = 0.1f,
+    borderOpacity: Float = 0.2f,
+    blur: Float = 25f
 ): Modifier = this
     .clip(shape)
+    .then(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Modifier.graphicsLayer {
+                renderEffect = AndroidRenderEffect.createBlurEffect(blur, blur, android.graphics.Shader.TileMode.MIRROR).asComposeRenderEffect()
+            }
+        } else this
+    )
     .background(
-        Color(0xFF171F33).copy(alpha = opacity)
+        Color.White.copy(alpha = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.15f)
     )
     .border(
-        width = 1.dp,
+        width = 0.5.dp,
         brush = Brush.verticalGradient(
             colors = listOf(
-                Color.White.copy(alpha = borderOpacity + 0.05f),
-                Color.White.copy(alpha = borderOpacity)
+                Color.White.copy(alpha = borderOpacity),
+                Color.White.copy(alpha = borderOpacity * 0.5f)
             )
         ),
         shape = shape
     )
-    .padding(padding)
 
 fun Modifier.glassPanelHeavy(
     shape: Shape = RoundedCornerShape(32.dp),
-    opacity: Float = 0.6f,
-    borderOpacity: Float = 0.08f
+    opacity: Float = 0.25f,
+    borderOpacity: Float = 0.3f,
+    blur: Float = 40f
 ): Modifier = this
     .clip(shape)
+    .then(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Modifier.graphicsLayer {
+                renderEffect = AndroidRenderEffect.createBlurEffect(blur, blur, android.graphics.Shader.TileMode.MIRROR).asComposeRenderEffect()
+            }
+        } else this
+    )
     .background(
-        Color(0xFF0B1326).copy(alpha = opacity)
+        Color.White.copy(alpha = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.2f)
     )
     .border(
-        width = 1.dp,
+        width = 0.5.dp,
         brush = Brush.verticalGradient(
             colors = listOf(
-                Color.White.copy(alpha = borderOpacity + 0.02f),
-                Color.White.copy(alpha = borderOpacity)
+                Color.White.copy(alpha = borderOpacity),
+                Color.White.copy(alpha = borderOpacity * 0.4f)
             )
         ),
         shape = shape

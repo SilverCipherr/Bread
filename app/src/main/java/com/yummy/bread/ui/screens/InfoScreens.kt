@@ -35,7 +35,7 @@ fun SecurityPrivacyScreen(onBack: () -> Unit) {
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background
+        containerColor = Color.Transparent
     ) { padding ->
         Column(
             modifier = Modifier
@@ -95,7 +95,7 @@ fun AboutScreen(onBack: () -> Unit) {
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background
+        containerColor = Color.Transparent
     ) { padding ->
         Column(
             modifier = Modifier

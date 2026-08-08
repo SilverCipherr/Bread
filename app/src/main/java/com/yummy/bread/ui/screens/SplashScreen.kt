@@ -17,9 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yummy.bread.R
-import com.yummy.bread.ui.theme.Background
 import com.yummy.bread.ui.theme.Primary
-import com.yummy.bread.ui.theme.Secondary
 import kotlinx.coroutines.delay
 
 @Composable
@@ -31,35 +29,9 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Background),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        // Ambient Background Glows
-        Box(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .size(400.dp)
-                    .offset(x = (-100).dp, y = (-100).dp)
-                    .background(
-                        Brush.radialGradient(
-                            colors = listOf(Primary.copy(alpha = 0.15f), Color.Transparent)
-                        )
-                    )
-            )
-            Box(
-                modifier = Modifier
-                    .size(400.dp)
-                    .align(Alignment.BottomEnd)
-                    .offset(x = 100.dp, y = 100.dp)
-                    .background(
-                        Brush.radialGradient(
-                            colors = listOf(Secondary.copy(alpha = 0.1f), Color.Transparent)
-                        )
-                    )
-            )
-        }
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,

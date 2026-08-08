@@ -40,7 +40,6 @@ fun ProfileSelectorScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

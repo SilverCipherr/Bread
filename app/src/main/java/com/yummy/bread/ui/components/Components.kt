@@ -33,7 +33,8 @@ fun GlassCard(
 ) {
     Column(
         modifier = modifier
-            .glassPanel(shape = shape, padding = 20.dp),
+            .glassPanel(shape = shape)
+            .padding(20.dp),
         content = content
     )
 }
@@ -203,8 +204,8 @@ fun BottomNavBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .glassPanelHeavy(shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
-            .padding(horizontal = 16.dp, vertical = 24.dp),
+            .glassPanelHeavy(shape = CircleShape)
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ) {

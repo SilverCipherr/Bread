@@ -74,7 +74,6 @@ fun SecurityLockScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
             .padding(24.dp)
     ) {
         Column(
