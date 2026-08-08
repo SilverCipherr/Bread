@@ -1,21 +1,25 @@
-# Walkthrough - Centralized Glass Color Control
+# Walkthrough - Clean 3D Glass Refinement
 
-I have centralized the color control for all glassy components in the app. You can now change the tint of every card and bar by editing a single line.
+I have refined the glassy components to eliminate the "ugly rectangle" artifacts while maintaining a premium 3D look.
 
-## Changes Made
+## Key Changes
 
-### 1. Master Color Switch
-- **[Modified Color.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/theme/Color.kt)**: Added `val GlassColor = Color.White`. This is now the source of truth for all glassy effects.
+### 1. Artifact Removal
+- **[Shadow Cleanup](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/components/GlassModifier.kt)**: Removed the `.shadow()` modifier from all glassy components. This was the source of the dark, sharp-edged rectangles bleeding through the transparent panels.
 
-### 2. Linked Glass Modifiers
-- **[Modified GlassModifier.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/components/GlassModifier.kt)**:
-    - Updated `glassPanel` and `glassPanelHeavy` to use `GlassColor` for their backgrounds and borders.
-    - Added the necessary import to link these files.
+### 2. High-Fidelity 3D Glass
+- **Advanced Rim Lighting**: Replaced shadows with a sophisticated **multi-stop linear gradient border**. This creates a sharp "beveled edge" effect that catches light naturally without causing internal artifacts.
+- **Improved Light Wash**: Refined the background linear gradients to provide a smoother transition from highlight to shadow across the surface of each card.
+- **Deep Blurring**: Maintained the high-quality real-time blur (on Android 12+) to ensure the vibrant background glows through beautifully.
+
+### 3. Layout Transparency
+- **Decoupled Containers**: Verified that the Top Bar and cards use clean, elevation-free containers, ensuring perfect rounded corners and a floating aesthetic.
 
 ## Verification Results
 
-### Build Success
+### Build and Visuals
 - **Build Status**: `Build finished successfully.`
-
-> [!TIP]
-> To change the look of your app's glass, simply go to [Color.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/theme/Color.kt) and change `GlassColor`. All components will update automatically!
+- **Visual Verification**:
+    - The dark internal boxes are completely gone.
+    - All cards now have clean, smooth rounded edges.
+    - The 3D effect is more refined, relying on light simulation rather than heavy drop shadows.

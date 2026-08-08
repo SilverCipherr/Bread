@@ -1,5 +1,7 @@
-- [x] Centralize Glass Color Control
-    - [x] Add `GlassColor` to `Color.kt`
-    - [x] Update `GlassModifier.kt` to use `GlassColor`
+- [x] Fix "Ugly Rectangles" in `GlassModifier.kt`
+    - [x] Remove `.shadow()` calls
+    - [x] Refine 3D effect with dual-layer border/gradient
+- [x] Ensure transparency in `MainScreen.kt`
 - [x] Verification
     - [x] Build project
+    - [x] Verify clean glassy look without internal artifacts

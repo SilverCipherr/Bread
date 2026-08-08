@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.geometry.Offset
 import com.yummy.bread.ui.theme.GlassColor
 
 import androidx.compose.ui.graphics.graphicsLayer
@@ -21,8 +22,8 @@ import android.os.Build
 
 fun Modifier.glassPanel(
     shape: Shape = RoundedCornerShape(24.dp),
-    opacity: Float = 0.1f,
-    borderOpacity: Float = 0.2f,
+    opacity: Float = 0.12f,
+    borderOpacity: Float = 0.3f,
     blur: Float = 25f
 ): Modifier = this
     .then(
@@ -33,16 +34,26 @@ fun Modifier.glassPanel(
         } else this
     )
     .background(
-        GlassColor.copy(alpha = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.15f),
+        brush = Brush.linearGradient(
+            colors = listOf(
+                GlassColor.copy(alpha = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.15f),
+                GlassColor.copy(alpha = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.15f) * 0.4f)
+            ),
+            start = Offset(0f, 0f),
+            end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+        ),
         shape = shape
     )
     .border(
-        width = 0.5.dp,
-        brush = Brush.verticalGradient(
+        width = 1.dp,
+        brush = Brush.linearGradient(
             colors = listOf(
-                GlassColor.copy(alpha = borderOpacity),
-                GlassColor.copy(alpha = borderOpacity * 0.5f)
-            )
+                Color.White.copy(alpha = borderOpacity),
+                Color.White.copy(alpha = borderOpacity * 0.1f),
+                Color.White.copy(alpha = borderOpacity * 0.6f)
+            ),
+            start = Offset(0f, 0f),
+            end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
         ),
         shape = shape
     )
@@ -50,8 +61,8 @@ fun Modifier.glassPanel(
 
 fun Modifier.glassPanelHeavy(
     shape: Shape = RoundedCornerShape(32.dp),
-    opacity: Float = 0.25f,
-    borderOpacity: Float = 0.3f,
+    opacity: Float = 0.28f,
+    borderOpacity: Float = 0.4f,
     blur: Float = 40f
 ): Modifier = this
     .then(
@@ -62,16 +73,26 @@ fun Modifier.glassPanelHeavy(
         } else this
     )
     .background(
-        GlassColor.copy(alpha = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.2f),
+        brush = Brush.linearGradient(
+            colors = listOf(
+                GlassColor.copy(alpha = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.2f),
+                GlassColor.copy(alpha = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.2f) * 0.5f)
+            ),
+            start = Offset(0f, 0f),
+            end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+        ),
         shape = shape
     )
     .border(
-        width = 0.5.dp,
-        brush = Brush.verticalGradient(
+        width = 1.dp,
+        brush = Brush.linearGradient(
             colors = listOf(
-                GlassColor.copy(alpha = borderOpacity),
-                GlassColor.copy(alpha = borderOpacity * 0.4f)
-            )
+                Color.White.copy(alpha = borderOpacity),
+                Color.White.copy(alpha = borderOpacity * 0.05f),
+                Color.White.copy(alpha = borderOpacity * 0.7f)
+            ),
+            start = Offset(0f, 0f),
+            end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
         ),
         shape = shape
     )
