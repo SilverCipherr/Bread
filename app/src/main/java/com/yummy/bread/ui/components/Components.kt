@@ -81,19 +81,19 @@ fun TransactionItem(transaction: Transaction) {
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(transaction.category, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
+                    Text(transaction.category, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge, color = Color.White)
                     if (transaction.note.isNotBlank()) {
                         Text(
                             transaction.note,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = Color.White.copy(alpha = 0.7f)
                         )
                     }
                 }
             }
             Column(horizontalAlignment = Alignment.End) {
-                Text("${if (transaction.amount < 0) "" else "+"}$${transaction.amount}", fontWeight = FontWeight.Bold)
-                Text(transaction.date, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("${if (transaction.amount < 0) "" else "+"}$${transaction.amount}", fontWeight = FontWeight.Bold, color = Color.White)
+                Text(transaction.date, style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.5f))
             }
         }
     }
@@ -119,7 +119,7 @@ fun MoltenButton(
     ) {
         Text(
             text = text,
-            color = Color.Black,
+            color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp
         )
@@ -142,13 +142,13 @@ fun LiquidProgressBar(
                 Text(
                     text = "Budget Target",
                     style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = remainingText,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color.White.copy(alpha = 0.7f)
                 )
             }
             Text(

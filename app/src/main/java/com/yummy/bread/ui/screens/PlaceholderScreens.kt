@@ -75,12 +75,14 @@ fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostCo
         TextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            placeholder = { Text("Search transactions...", color = MaterialTheme.colorScheme.onSurfaceVariant) },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
+            placeholder = { Text("Search transactions...", color = Color.White.copy(alpha = 0.5f)) },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.White.copy(alpha = 0.5f)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp)),
             colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
                 focusedContainerColor = Color.White.copy(alpha = 0.05f),
                 unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
                 focusedIndicatorColor = Color.Transparent,
@@ -95,7 +97,7 @@ fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostCo
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     if (searchQuery.isEmpty()) "No transactions yet" else "No matching transactions",
-                    color = Color.Gray
+                    color = Color.White.copy(alpha = 0.5f)
                 )
             }
         } else {

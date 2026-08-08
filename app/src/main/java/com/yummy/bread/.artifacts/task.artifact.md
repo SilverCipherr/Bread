@@ -1,13 +1,6 @@
-- [x] Set up Adaptive Icon resources
-    - [x] Add `ic_launcher_background` to `colors.xml`
-    - [x] Create `mipmap-anydpi-v26/ic_launcher.xml`
-    - [x] Create `mipmap-anydpi-v26/ic_launcher_round.xml`
-- [x] Generate Adaptive Icon foreground layers
-    - [x] Generate `ic_launcher_foreground.png` for `mdpi` (108x108)
-    - [x] Generate `ic_launcher_foreground.png` for `hdpi` (162x162)
-    - [x] Generate `ic_launcher_foreground.png` for `xhdpi` (216x216)
-    - [x] Generate `ic_launcher_foreground.png` for `xxhdpi` (324x324)
-    - [x] Generate `ic_launcher_foreground.png` for `xxxhdpi` (432x432)
-- [x] Verification
-    - [x] Build project
-    - [x] Verify resource packaging
+- [ ] Update Home and History screen text colors to white
+    - [ ] Update `MoltenButton` in `Components.kt` to use white text
+    - [ ] Ensure `TransactionItem` in `Components.kt` uses white/onSurface text
+    - [ ] Update `LiquidProgressBar` in `Components.kt` labels
+    - [ ] Update `DashboardContent` text colors
+    - [ ] Update `TransactionHistoryScreen` search field colors

@@ -55,12 +55,12 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                         Text(
                             "Total Balance",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = Color.White.copy(alpha = 0.7f)
                         )
                         Text(
                             "${uiState.currency.split(" ").last().removeSurrounding("(", ")")}${uiState.totalBalance}",
                             style = MaterialTheme.typography.displayLarge,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = Color.White
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -72,12 +72,12 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                 val symbol = uiState.currency.split(" ").last().removeSurrounding("(", ")")
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     GlassCard(modifier = Modifier.weight(1f)) {
-                        Text("Monthly Income", style = MaterialTheme.typography.labelSmall)
-                        Text("$symbol${uiState.monthlyIncome}", style = MaterialTheme.typography.headlineMedium)
+                        Text("Monthly Income", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.7f))
+                        Text("$symbol${uiState.monthlyIncome}", style = MaterialTheme.typography.headlineMedium, color = Color.White)
                     }
                     GlassCard(modifier = Modifier.weight(1f)) {
-                        Text("Monthly Spend", style = MaterialTheme.typography.labelSmall)
-                        Text("$symbol${uiState.monthlySpend}", style = MaterialTheme.typography.headlineMedium)
+                        Text("Monthly Spend", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.7f))
+                        Text("$symbol${uiState.monthlySpend}", style = MaterialTheme.typography.headlineMedium, color = Color.White)
                     }
                 }
             }
@@ -100,7 +100,7 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Recent Transactions", style = MaterialTheme.typography.headlineSmall)
+                    Text("Recent Transactions", style = MaterialTheme.typography.headlineSmall, color = Color.White)
                      MoltenButton(text = "See All", onClick = {
                          navController.navigate(Screen.History.route) {
                              popUpTo(Screen.Dashboard.route) { saveState = true }
