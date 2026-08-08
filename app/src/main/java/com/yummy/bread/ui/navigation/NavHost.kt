@@ -65,9 +65,8 @@ fun BreadNavHost(
                     onSuccess = {
                         viewModel.login(profileId)
                         navController.navigate(Screen.Dashboard.route) {
-                            popUpTo(Screen.ProfileSelector.route) { inclusive = true }
-                            // Also pop the lock screen if we came from splash
-                            popUpTo(Screen.Lock.route) { inclusive = true }
+                            // Clear everything up to the splash screen to make Dashboard the new root
+                            popUpTo(Screen.Splash.route) { inclusive = true }
                         }
                     }
                 )
@@ -92,10 +91,8 @@ fun BreadNavHost(
                     onNavigateToSecurity = { navController.navigate(Screen.SecurityPrivacy.route) },
                     onNavigateToAbout = { navController.navigate(Screen.About.route) },
                     onLogout = {
-                        viewModel.logout()
-                        navController.navigate(Screen.ProfileSelector.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
+                        // Just navigate to the selector, allowing "Back" to work
+                        navController.navigate(Screen.ProfileSelector.route)
                     }
                 )
             }

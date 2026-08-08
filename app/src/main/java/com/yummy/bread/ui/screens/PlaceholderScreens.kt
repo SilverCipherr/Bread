@@ -317,13 +317,13 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
     val isEditing = uiState.activeProfileId != null
     
-    var name by remember(uiState.activeProfileId) { mutableStateOf(uiState.userName) }
-    var balance by remember(uiState.activeProfileId) { mutableStateOf(if (uiState.totalBalance == 0.0) "" else uiState.totalBalance.toString()) }
-    var income by remember(uiState.activeProfileId) { mutableStateOf(if (uiState.monthlyIncome == 0.0) "" else uiState.monthlyIncome.toString()) }
-    var goal by remember(uiState.activeProfileId) { mutableStateOf(if (uiState.monthlySavingsGoal == 0.0) "" else uiState.monthlySavingsGoal.toString()) }
+    var name by remember(uiState.activeProfileId, uiState.userName) { mutableStateOf(uiState.userName) }
+    var balance by remember(uiState.activeProfileId, uiState.totalBalance) { mutableStateOf(if (uiState.totalBalance == 0.0) "" else uiState.totalBalance.toString()) }
+    var income by remember(uiState.activeProfileId, uiState.monthlyIncome) { mutableStateOf(if (uiState.monthlyIncome == 0.0) "" else uiState.monthlyIncome.toString()) }
+    var goal by remember(uiState.activeProfileId, uiState.monthlySavingsGoal) { mutableStateOf(if (uiState.monthlySavingsGoal == 0.0) "" else uiState.monthlySavingsGoal.toString()) }
     var pin by remember(uiState.activeProfileId) { mutableStateOf("") }
-    var selectedCurrency by remember(uiState.activeProfileId) { mutableStateOf(uiState.currency) }
-    var selectedImageUri by remember(uiState.activeProfileId) { mutableStateOf<android.net.Uri?>(uiState.profilePictureUri) }
+    var selectedCurrency by remember(uiState.activeProfileId, uiState.currency) { mutableStateOf(uiState.currency) }
+    var selectedImageUri by remember(uiState.activeProfileId, uiState.profilePictureUri) { mutableStateOf<android.net.Uri?>(uiState.profilePictureUri) }
     
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),

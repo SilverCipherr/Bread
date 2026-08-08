@@ -120,40 +120,41 @@ fun SecurityLockScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "Fingerprint", "0", "Delete")
             
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                userScrollEnabled = false,
-                modifier = Modifier.wrapContentHeight(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(keys) { key ->
-                    KeypadButton(
-                        key = key,
-                        onClick = {
-                            when (key) {
-                                "Delete" -> if (enteredPin.isNotEmpty()) enteredPin = enteredPin.dropLast(1)
-                                "Fingerprint" -> authenticateBiometrically()
-                                else -> {
-                                    if (enteredPin.length < 4) {
-                                        enteredPin += key
-                                        if (enteredPin.length == 4) {
-                                            if (enteredPin == profile.pin) {
-                                                onSuccess()
-                                            } else {
-                                                enteredPin = ""
+            // Using a simple Column + Row layout for better height control than LazyVerticalGrid
+            keys.chunked(3).forEach { rowKeys ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    rowKeys.forEach { key ->
+                        KeypadButton(
+                            key = key,
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                when (key) {
+                                    "Delete" -> if (enteredPin.isNotEmpty()) enteredPin = enteredPin.dropLast(1)
+                                    "Fingerprint" -> authenticateBiometrically()
+                                    else -> {
+                                        if (enteredPin.length < 4) {
+                                            enteredPin += key
+                                            if (enteredPin.length == 4) {
+                                                if (enteredPin == profile.pin) {
+                                                    onSuccess()
+                                                } else {
+                                                    enteredPin = ""
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
@@ -163,11 +164,12 @@ fun SecurityLockScreen(
 @Composable
 fun KeypadButton(
     key: String,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Box(
-        modifier = Modifier
-            .aspectRatio(1.5f)
+        modifier = modifier
+            .height(64.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White.copy(alpha = 0.05f))
             .clickable(onClick = onClick),
