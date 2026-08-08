@@ -1,24 +1,36 @@
-# Implementation Plan - Vibrant Full-Screen Immersive Background
+# Implementation Plan - Fix App Icon White Border
 
-The user reports that the background animation appears as a circular blob rather than a full-screen wash, and the colors are not vibrant enough. This is due to using `drawCircle` (which defaults to a small radius) instead of `drawRect` to fill the viewport with gradients.
+I will convert the legacy app icon into an **Adaptive Icon**. This will eliminate the default white border added by the Android system and allow the logo to fill the icon area while ensuring no parts are cut off.
 
 ## Proposed Changes
 
-### 1. Restore Vibrant Colors
-- **[MODIFY] [Color.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/theme/Color.kt)**: Re-introduce the high-contrast iOS 17 vibrant colors (`Indigo`, `Sky`, `Rose`, `Green`) with full opacity for the base definitions, allowing controlled transparency in the background layer.
+### 1. Adaptive Icon Definitions
+- **[NEW] [ic_launcher.xml](file:///home/silvercipher/Projects/Bread/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml)**:
+    - Define an adaptive icon using a black background and a scaled foreground layer.
+- **[NEW] [ic_launcher_round.xml](file:///home/silvercipher/Projects/Bread/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml)**:
+    - Alias to the adaptive icon definition.
 
-### 2. Fix Full-Screen Blending
-- **[MODIFY] [GlassBackground.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/components/GlassBackground.kt)**:
-    - Replace `drawCircle` with `drawRect`. This ensures each gradient layer fills the entire screen, allowing the radial gradients to fade out naturally to the edges rather than being clipped into a circle shape.
-    - Increase the `radius` of the radial gradients to be significantly larger than the screen dimensions to create a soft, blended "wash" effect.
-    - Use all four vibrant colors for a richer spectrum.
+### 2. Foreground Layer Generation
+I will use the `bread_logo.png` to generate a dedicated foreground layer (`ic_launcher_foreground.png`) for all densities.
+- The logo will be centered on a transparent 108dp x 108dp canvas.
+- I will scale the logo to ~80% of the canvas size to ensure it fills the icon "fully" without hitting the safe-zone edges (preventing cutoff).
+
+Densities to generate for `ic_launcher_foreground.png`:
+- `mdpi`: 108x108 px (logo ~86px)
+- `hdpi`: 162x162 px (logo ~130px)
+- `xhdpi`: 216x216 px (logo ~173px)
+- `xxhdpi`: 324x324 px (logo ~259px)
+- `xxxhdpi`: 432x432 px (logo ~346px)
+
+### 3. Background Color
+- **[MODIFY] [colors.xml](file:///home/silvercipher/Projects/Bread/app/src/main/res/values/colors.xml)**:
+    - Ensure a `ic_launcher_background` color is defined (set to `#000000` to match the logo).
 
 ## Verification Plan
 
 ### Automated Tests
-- Build the project to ensure no syntax errors.
+- Run `./gradlew :app:packageDebugResources` to verify the new resource structure.
 
 ### Manual Verification
-- Verify that the background no longer shows distinct circular boundaries.
-- Ensure the colors are vibrant and blend into each other across the entire screen.
-- Confirm the animation remains fluid and immersive across all screens.
+- Deploy to an Android 8.0+ device/emulator.
+- Verify the app icon no longer has a white border and the logo is perfectly centered and scaled.
