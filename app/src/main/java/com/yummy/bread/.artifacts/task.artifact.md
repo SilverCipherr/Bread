@@ -1,6 +1,5 @@
-- [ ] Update Home and History screen text colors to white
-    - [ ] Update `MoltenButton` in `Components.kt` to use white text
-    - [ ] Ensure `TransactionItem` in `Components.kt` uses white/onSurface text
-    - [ ] Update `LiquidProgressBar` in `Components.kt` labels
-    - [ ] Update `DashboardContent` text colors
-    - [ ] Update `TransactionHistoryScreen` search field colors
+- [x] Centralize Glass Color Control
+    - [x] Add `GlassColor` to `Color.kt`
+    - [x] Update `GlassModifier.kt` to use `GlassColor`
+- [x] Verification
+    - [x] Build project

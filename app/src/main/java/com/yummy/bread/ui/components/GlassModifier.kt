@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.yummy.bread.ui.theme.GlassColor
 
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.RenderEffect
@@ -24,7 +25,6 @@ fun Modifier.glassPanel(
     borderOpacity: Float = 0.2f,
     blur: Float = 25f
 ): Modifier = this
-    .clip(shape)
     .then(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             Modifier.graphicsLayer {
@@ -33,18 +33,20 @@ fun Modifier.glassPanel(
         } else this
     )
     .background(
-        Color.White.copy(alpha = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.15f)
+        GlassColor.copy(alpha = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.15f),
+        shape = shape
     )
     .border(
         width = 0.5.dp,
         brush = Brush.verticalGradient(
             colors = listOf(
-                Color.White.copy(alpha = borderOpacity),
-                Color.White.copy(alpha = borderOpacity * 0.5f)
+                GlassColor.copy(alpha = borderOpacity),
+                GlassColor.copy(alpha = borderOpacity * 0.5f)
             )
         ),
         shape = shape
     )
+    .clip(shape)
 
 fun Modifier.glassPanelHeavy(
     shape: Shape = RoundedCornerShape(32.dp),
@@ -52,7 +54,6 @@ fun Modifier.glassPanelHeavy(
     borderOpacity: Float = 0.3f,
     blur: Float = 40f
 ): Modifier = this
-    .clip(shape)
     .then(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             Modifier.graphicsLayer {
@@ -61,15 +62,17 @@ fun Modifier.glassPanelHeavy(
         } else this
     )
     .background(
-        Color.White.copy(alpha = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.2f)
+        GlassColor.copy(alpha = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) opacity else opacity + 0.2f),
+        shape = shape
     )
     .border(
         width = 0.5.dp,
         brush = Brush.verticalGradient(
             colors = listOf(
-                Color.White.copy(alpha = borderOpacity),
-                Color.White.copy(alpha = borderOpacity * 0.4f)
+                GlassColor.copy(alpha = borderOpacity),
+                GlassColor.copy(alpha = borderOpacity * 0.4f)
             )
         ),
         shape = shape
     )
+    .clip(shape)

@@ -37,3 +37,4 @@ val Glow2 = Color(0xFFd60d2e) // Deep Indigo
 val Glow3 = Color(0xFF27cfc6) // Rich Violet
 val Glow4 = Color(0xFF0800ff) // Vivid Lavender
 val GlassBase = Color(0x1AFFFFFF) // Super thin base white for glass
+val GlassColor = Color(0x00E5CBEF) // Global master switch for all glassy components

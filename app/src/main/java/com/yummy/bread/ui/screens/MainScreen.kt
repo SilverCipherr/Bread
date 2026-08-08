@@ -53,56 +53,63 @@ fun MainScreen(
         Scaffold(
             topBar = {
                 if (showBars) {
-                    CenterAlignedTopAppBar(
-                        title = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.bread_logo),
-                                    contentDescription = "Logo",
-                                    modifier = Modifier.size(40.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    "Bread",
-                                    style = MaterialTheme.typography.headlineLarge,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .clip(CircleShape)
-                                        .background(Color.White.copy(alpha = 0.1f)),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    if (uiState.profilePictureUri != null) {
-                                        Image(
-                                            painter = rememberAsyncImagePainter(uiState.profilePictureUri),
-                                            contentDescription = "Profile",
-                                            modifier = Modifier.fillMaxSize(),
-                                            contentScale = ContentScale.Crop
-                                        )
-                                    } else {
-                                        Icon(
-                                            Icons.Default.Person,
-                                            contentDescription = "Profile",
-                                            tint = Color.White
-                                        )
-                                    }
-                                }
-                            }
-                        },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                            containerColor = Color.Transparent
-                        ),
+                    Box(
                         modifier = Modifier
                             .statusBarsPadding()
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                             .glassPanelHeavy(shape = RoundedCornerShape(24.dp))
-                    )
+                    ) {
+                        CenterAlignedTopAppBar(
+                            title = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.bread_logo),
+                                        contentDescription = "Logo",
+                                        modifier = Modifier.size(40.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        "Bread",
+                                        style = MaterialTheme.typography.headlineLarge,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .clip(CircleShape)
+                                            .background(Color.White.copy(alpha = 0.1f)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        if (uiState.profilePictureUri != null) {
+                                            Image(
+                                                painter = rememberAsyncImagePainter(uiState.profilePictureUri),
+                                                contentDescription = "Profile",
+                                                modifier = Modifier.fillMaxSize(),
+                                                contentScale = ContentScale.Crop
+                                            )
+                                        } else {
+                                            Icon(
+                                                Icons.Default.Person,
+                                                contentDescription = "Profile",
+                                                tint = Color.White
+                                            )
+                                        }
+                                    }
+                                }
+                            },
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                containerColor = Color.Transparent,
+                                scrolledContainerColor = Color.Transparent,
+                                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                                actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        )
+                    }
                 }
             },
             floatingActionButton = {

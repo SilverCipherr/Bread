@@ -1,25 +1,21 @@
-# Walkthrough - White Text for Home and History
+# Walkthrough - Centralized Glass Color Control
 
-I have updated the **Home** (Dashboard) and **History** screens to ensure all text is white, providing better contrast and readability against the glassy background.
+I have centralized the color control for all glassy components in the app. You can now change the tint of every card and bar by editing a single line.
 
-## Key Changes
+## Changes Made
 
-### 1. Component Refinement
-- **[MoltenButton](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/components/Components.kt)**: Changed the text color from black to white for the "See All" and other molten-style buttons.
-- **[TransactionItem](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/components/Components.kt)**: Explicitly set the color for Category, Note, Amount, and Date fields to white (with varying alpha for hierarchy) to ensure they are always legible regardless of system theme.
-- **[LiquidProgressBar](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/components/Components.kt)**: Updated labels like "Budget Target" and the remaining spend text to white.
+### 1. Master Color Switch
+- **[Modified Color.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/theme/Color.kt)**: Added `val GlassColor = Color.White`. This is now the source of truth for all glassy effects.
 
-### 2. Screen Updates
-- **[DashboardScreen](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/screens/DashboardScreen.kt)**:
-    - Updated "Total Balance" section to use white text.
-    - Updated "Monthly Income" and "Monthly Spend" cards to use white text.
-    - Updated "Recent Transactions" header to white.
-- **[History Screen](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/screens/PlaceholderScreens.kt)**:
-    - Updated the search field text and placeholder colors to white.
-    - Updated the "No transactions yet" empty state message to white.
+### 2. Linked Glass Modifiers
+- **[Modified GlassModifier.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/components/GlassModifier.kt)**:
+    - Updated `glassPanel` and `glassPanelHeavy` to use `GlassColor` for their backgrounds and borders.
+    - Added the necessary import to link these files.
 
 ## Verification Results
 
-### Build and Contrast
+### Build Success
 - **Build Status**: `Build finished successfully.`
-- **Visual Integrity**: Verified that all key information on the Home and History screens now uses white text, ensuring perfect legibility on the dark immersive background.
+
+> [!TIP]
+> To change the look of your app's glass, simply go to [Color.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/theme/Color.kt) and change `GlassColor`. All components will update automatically!
