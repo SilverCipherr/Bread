@@ -17,6 +17,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -31,6 +32,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -71,7 +73,6 @@ fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostCo
         )
         Spacer(modifier = Modifier.height(20.dp))
         
-        // Real search bar
         TextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
@@ -314,13 +315,15 @@ fun AnalyticsScreen(viewModel: BreadViewModel) {
 @Composable
 fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
+    val isEditing = uiState.activeProfileId != null
     
-    var name by remember { mutableStateOf(uiState.userName) }
-    var balance by remember { mutableStateOf(if (uiState.totalBalance == 0.0) "" else uiState.totalBalance.toString()) }
-    var income by remember { mutableStateOf(if (uiState.monthlyIncome == 0.0) "" else uiState.monthlyIncome.toString()) }
-    var goal by remember { mutableStateOf(if (uiState.monthlySavingsGoal == 0.0) "" else uiState.monthlySavingsGoal.toString()) }
-    var selectedCurrency by remember { mutableStateOf(uiState.currency) }
-    var selectedImageUri by remember { mutableStateOf<android.net.Uri?>(uiState.profilePictureUri) }
+    var name by remember(uiState.activeProfileId) { mutableStateOf(uiState.userName) }
+    var balance by remember(uiState.activeProfileId) { mutableStateOf(if (uiState.totalBalance == 0.0) "" else uiState.totalBalance.toString()) }
+    var income by remember(uiState.activeProfileId) { mutableStateOf(if (uiState.monthlyIncome == 0.0) "" else uiState.monthlyIncome.toString()) }
+    var goal by remember(uiState.activeProfileId) { mutableStateOf(if (uiState.monthlySavingsGoal == 0.0) "" else uiState.monthlySavingsGoal.toString()) }
+    var pin by remember(uiState.activeProfileId) { mutableStateOf("") }
+    var selectedCurrency by remember(uiState.activeProfileId) { mutableStateOf(uiState.currency) }
+    var selectedImageUri by remember(uiState.activeProfileId) { mutableStateOf<android.net.Uri?>(uiState.profilePictureUri) }
     
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -333,14 +336,16 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
-            .padding(24.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "Set Up Your Profile",
+                if (isEditing) "Edit Profile" else "Set Up Your Profile",
                 style = MaterialTheme.typography.headlineLarge,
                 color = Primary,
                 modifier = Modifier.padding(top = 40.dp)
@@ -409,12 +414,11 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
                             disabledContainerColor = Color.Transparent,
                         )
                     )
+                    
                     TextField(
                         value = balance,
                         onValueChange = { newValue ->
-                            if (newValue.all { it.isDigit() || it == '.' }) {
-                                balance = newValue
-                            }
+                            if (newValue.all { it.isDigit() || it == '.' }) balance = newValue
                         },
                         label = { Text("Current Balance") },
                         leadingIcon = { Icon(Icons.Default.AccountBalanceWallet, contentDescription = null) },
@@ -430,12 +434,11 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
                             disabledContainerColor = Color.Transparent,
                         )
                     )
+                    
                     TextField(
                         value = income,
                         onValueChange = { newValue ->
-                            if (newValue.all { it.isDigit() || it == '.' }) {
-                                income = newValue
-                            }
+                            if (newValue.all { it.isDigit() || it == '.' }) income = newValue
                         },
                         label = { Text("Monthly Income") },
                         leadingIcon = { Icon(Icons.Default.Payments, contentDescription = null) },
@@ -451,12 +454,11 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
                             disabledContainerColor = Color.Transparent,
                         )
                     )
+                    
                     TextField(
                         value = goal,
                         onValueChange = { newValue ->
-                            if (newValue.all { it.isDigit() || it == '.' }) {
-                                goal = newValue
-                            }
+                            if (newValue.all { it.isDigit() || it == '.' }) goal = newValue
                         },
                         label = { Text("Monthly Savings Goal") },
                         leadingIcon = { Icon(Icons.Default.Savings, contentDescription = null) },
@@ -464,6 +466,26 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Decimal,
+                            imeAction = ImeAction.Next
+                        ),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                        )
+                    )
+
+                    // PIN Setup
+                    TextField(
+                        value = pin,
+                        onValueChange = { if (it.length <= 4 && it.all { c -> c.isDigit() }) pin = it },
+                        label = { Text(if (isEditing) "New Security PIN (Optional)" else "Set 4-Digit Security PIN") },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.NumberPassword,
                             imeAction = ImeAction.Done
                         ),
                         keyboardActions = KeyboardActions(
@@ -511,19 +533,26 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, onSetupComplete: () -> Unit) {
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(32.dp))
 
             MoltenButton(
-                text = "Complete Setup",
+                text = if (isEditing) "Save Changes" else "Complete Setup",
                 onClick = {
-                    viewModel.updateProfile(
-                        name = name,
-                        balance = balance.toDoubleOrNull() ?: 0.0,
-                        income = income.toDoubleOrNull() ?: 0.0,
-                        goal = goal.toDoubleOrNull() ?: 0.0,
-                        currency = selectedCurrency,
-                        photoUri = selectedImageUri
-                    )
+                    val balanceVal = balance.toDoubleOrNull() ?: 0.0
+                    val incomeVal = income.toDoubleOrNull() ?: 0.0
+                    val goalVal = goal.toDoubleOrNull() ?: 0.0
+                    
+                    if (isEditing) {
+                        viewModel.updateProfile(name, balanceVal, incomeVal, goalVal, selectedCurrency, selectedImageUri)
+                        if (pin.length == 4) viewModel.updatePin(pin)
+                    } else {
+                        if (pin.length == 4 && name.isNotBlank()) {
+                            viewModel.createProfile(name, balanceVal, incomeVal, goalVal, selectedCurrency, selectedImageUri, pin)
+                        } else {
+                            // Show error toast
+                            return@MoltenButton
+                        }
+                    }
                     onSetupComplete()
                 },
                 modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)

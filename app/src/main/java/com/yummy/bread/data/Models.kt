@@ -1,5 +1,7 @@
 package com.yummy.bread.data
 
+import android.net.Uri
+
 data class Transaction(
     val id: String,
     val title: String,
@@ -46,4 +48,15 @@ data class CategorySpend(
 data class TrendPoint(
     val label: String,
     val value: Float
+)
+
+data class Profile(
+    val id: String,
+    val name: String,
+    val pictureUri: Uri? = null,
+    val pin: String, // 4-digit hashed/encrypted PIN
+    val initialBalance: Double = 0.0,
+    val monthlyIncome: Double = 0.0,
+    val monthlySavingsGoal: Double = 0.0,
+    val currency: String = "USD ($)"
 )

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yummy.bread.data.Transaction
+import com.yummy.bread.ui.navigation.Screen
 import com.yummy.bread.ui.theme.Primary
 import com.yummy.bread.ui.theme.PrimaryContainer
 
@@ -207,10 +208,11 @@ fun BottomNavBar(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        NavItem("home", "Home", Icons.Default.Home, selectedRoute == "home") { onRouteSelected("home") }
-        NavItem("history", "History", Icons.Default.HistoryToggleOff, selectedRoute == "history") { onRouteSelected("history") }
-        NavItem("budget", "Budget", Icons.Default.AccountBalanceWallet, selectedRoute == "budget") { onRouteSelected("budget") }
-        NavItem("insights", "Insights", Icons.Default.Analytics, selectedRoute == "insights") { onRouteSelected("insights") }
+        NavItem("home", "Home", Icons.Default.Home, selectedRoute == Screen.Dashboard.route) { onRouteSelected(Screen.Dashboard.route) }
+        NavItem("history", "History", Icons.Default.HistoryToggleOff, selectedRoute == Screen.History.route) { onRouteSelected(Screen.History.route) }
+        NavItem("budget", "Budget", Icons.Default.AccountBalanceWallet, selectedRoute == Screen.Budget.route) { onRouteSelected(Screen.Budget.route) }
+        NavItem("insights", "Insights", Icons.Default.Analytics, selectedRoute == Screen.Insights.route) { onRouteSelected(Screen.Insights.route) }
+        NavItem("settings", "Settings", Icons.Default.Settings, selectedRoute == Screen.Settings.route) { onRouteSelected(Screen.Settings.route) }
     }
 }
 

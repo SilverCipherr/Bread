@@ -26,15 +26,28 @@ data class BreadUiState(
     val spendingBreakdown: List<CategorySpend> = emptyList(),
     val balanceTrend: List<TrendPoint> = emptyList(),
     val selectedTimeRange: String = "Monthly",
-    val trendPercentage: String = "+0.0%"
+    val trendPercentage: String = "+0.0%",
+    val isDarkMode: Boolean? = null,
+    
+    // Multi-profile
+    val profiles: List<Profile> = emptyList(),
+    val activeProfileId: String? = null,
+    val lastActiveProfileId: String? = null,
+    val isLocked: Boolean = false
 ) {
     val budget: Budget get() = Budget(monthlyIncome, monthlySavingsGoal, monthlySpend)
+    val activeProfile: Profile? get() = profiles.find { it.id == activeProfileId }
 }
 
 class BreadViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = BreadRepository(application)
     
-    private val _uiState = MutableStateFlow(repository.loadState())
+    private val _uiState = MutableStateFlow(
+        BreadUiState(
+            profiles = repository.loadProfiles(),
+            lastActiveProfileId = repository.loadLastActiveProfileId()
+        )
+    )
     val uiState: StateFlow<BreadUiState> = _uiState.asStateFlow()
 
     init {
@@ -45,14 +58,43 @@ class BreadViewModel(application: Application) : AndroidViewModel(application) {
         "Food" to Primary,
         "Transport" to Secondary,
         "Shopping" to Tertiary,
-        "Utilities" to Color(0xFFFFA726), // Orange
-        "Invest" to Color(0xFF66BB6A), // Green
-        "Gift" to Color(0xFFEC407A), // Pink
-        "Salary" to Color(0xFF26C6DA), // Cyan
-        "Groceries" to Color(0xFFAB47BC), // Purple
-        "Entertainment" to Color(0xFFFF7043), // Coral
-        "Other" to Color(0xFF90A4AE) // Blue Grey
+        "Utilities" to Color(0xFFFFA726),
+        "Invest" to Color(0xFF66BB6A),
+        "Gift" to Color(0xFFEC407A),
+        "Salary" to Color(0xFF26C6DA),
+        "Groceries" to Color(0xFFAB47BC),
+        "Entertainment" to Color(0xFFFF7043),
+        "Other" to Color(0xFF90A4AE)
     )
+
+    fun createProfile(
+        name: String,
+        balance: Double,
+        income: Double,
+        goal: Double,
+        currency: String,
+        photoUri: Uri?,
+        pin: String
+    ) {
+        val newProfile = Profile(
+            id = UUID.randomUUID().toString(),
+            name = name,
+            pictureUri = photoUri,
+            pin = pin,
+            initialBalance = balance,
+            monthlyIncome = income,
+            monthlySavingsGoal = goal,
+            currency = currency
+        )
+        
+        takeUriPermission(photoUri)
+        
+        val updatedProfiles = _uiState.value.profiles + newProfile
+        repository.saveProfiles(updatedProfiles)
+        
+        _uiState.update { it.copy(profiles = updatedProfiles) }
+        login(newProfile.id)
+    }
 
     fun updateProfile(
         name: String,
@@ -62,42 +104,105 @@ class BreadViewModel(application: Application) : AndroidViewModel(application) {
         currency: String,
         photoUri: Uri?
     ) {
-        photoUri?.let { uri ->
-            try {
-                val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                getApplication<Application>().contentResolver.takePersistableUriPermission(uri, flags)
-            } catch (_: Exception) {
-                // Ignore if not a content URI or permission cannot be taken
-            }
+        val activeId = _uiState.value.activeProfileId ?: return
+        
+        takeUriPermission(photoUri)
+        
+        val updatedProfiles = _uiState.value.profiles.map {
+            if (it.id == activeId) {
+                it.copy(
+                    name = name,
+                    pictureUri = photoUri,
+                    initialBalance = balance,
+                    monthlyIncome = income,
+                    monthlySavingsGoal = goal,
+                    currency = currency
+                )
+            } else it
         }
+        
+        repository.saveProfiles(updatedProfiles)
+        
         _uiState.update {
             it.copy(
+                profiles = updatedProfiles,
                 userName = name,
                 totalBalance = balance,
                 monthlyIncome = income,
                 monthlySavingsGoal = goal,
                 currency = currency,
                 profilePictureUri = photoUri
-            ).also { newState -> repository.saveState(newState) }
+            ).also { newState -> repository.saveActiveProfileState(activeId, newState) }
+        }
+        recalculateBreakdown()
+    }
+    
+    fun updatePin(newPin: String) {
+        val activeId = _uiState.value.activeProfileId ?: return
+        val updatedProfiles = _uiState.value.profiles.map {
+            if (it.id == activeId) it.copy(pin = newPin) else it
+        }
+        repository.saveProfiles(updatedProfiles)
+        _uiState.update { it.copy(profiles = updatedProfiles) }
+    }
+
+    fun login(profileId: String) {
+        val profile = _uiState.value.profiles.find { it.id == profileId } ?: return
+        val profileState = repository.loadActiveProfileState(profile)
+        
+        repository.saveLastActiveProfileId(profileId)
+        
+        _uiState.update {
+            profileState.copy(
+                profiles = it.profiles,
+                activeProfileId = profileId,
+                lastActiveProfileId = profileId,
+                isLocked = false
+            )
         }
         recalculateBreakdown()
     }
 
+    fun logout() {
+        _uiState.update {
+            BreadUiState(
+                profiles = it.profiles,
+                isDarkMode = it.isDarkMode,
+                lastActiveProfileId = it.lastActiveProfileId
+            )
+        }
+    }
+
+    fun lock() {
+        _uiState.update { it.copy(isLocked = true) }
+    }
+
+    private fun takeUriPermission(uri: Uri?) {
+        uri?.let { u ->
+            try {
+                val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                getApplication<Application>().contentResolver.takePersistableUriPermission(u, flags)
+            } catch (_: Exception) {}
+        }
+    }
+
+    fun setDarkMode(enabled: Boolean?) {
+        _uiState.update { it.copy(isDarkMode = enabled) }
+        repository.saveGlobalDarkMode(enabled)
+    }
+
     fun addTransaction(transaction: Transaction) {
+        val activeId = _uiState.value.activeProfileId ?: return
         _uiState.update { currentState ->
             val updatedTransactions = (listOf(transaction) + currentState.recentTransactions).take(100)
             val balanceChange = if (transaction.type == TransactionType.INCOME) transaction.amount else -transaction.amount
-            
             val spendIncrease = if (transaction.type == TransactionType.EXPENSE) transaction.amount else 0.0
             
-            // Update category budgets if it's an expense
             val updatedBudgets = if (transaction.type == TransactionType.EXPENSE) {
                 currentState.categoryBudgets.map { catBudget ->
                     if (catBudget.category == transaction.category) {
                         catBudget.copy(spent = catBudget.spent + transaction.amount)
-                    } else {
-                        catBudget
-                    }
+                    } else catBudget
                 }
             } else currentState.categoryBudgets
 
@@ -106,22 +211,24 @@ class BreadViewModel(application: Application) : AndroidViewModel(application) {
                 totalBalance = currentState.totalBalance + balanceChange,
                 monthlySpend = currentState.monthlySpend + spendIncrease,
                 categoryBudgets = updatedBudgets
-            ).also { newState -> repository.saveState(newState) }
+            ).also { newState -> repository.saveActiveProfileState(activeId, newState) }
         }
         recalculateBreakdown()
     }
     
     fun updateCategoryBudget(category: String, newLimit: Double) {
+        val activeId = _uiState.value.activeProfileId ?: return
         _uiState.update { currentState ->
             val updatedBudgets = currentState.categoryBudgets.map { 
                 if (it.category == category) it.copy(limit = newLimit) else it
             }
             currentState.copy(categoryBudgets = updatedBudgets)
-                .also { repository.saveState(it) }
+                .also { repository.saveActiveProfileState(activeId, it) }
         }
     }
 
     fun addCategoryBudget(category: String, limit: Double, icon: String) {
+        val activeId = _uiState.value.activeProfileId ?: return
         _uiState.update { currentState ->
             if (currentState.categoryBudgets.any { it.category == category }) return@update currentState
             
@@ -132,15 +239,16 @@ class BreadViewModel(application: Application) : AndroidViewModel(application) {
             val newBudget = CategoryBudget(category, limit, initialSpent, icon)
             val updatedBudgets = currentState.categoryBudgets + newBudget
             currentState.copy(categoryBudgets = updatedBudgets)
-                .also { repository.saveState(it) }
+                .also { repository.saveActiveProfileState(activeId, it) }
         }
     }
 
     fun deleteCategoryBudget(category: String) {
+        val activeId = _uiState.value.activeProfileId ?: return
         _uiState.update { currentState ->
             val updatedBudgets = currentState.categoryBudgets.filter { it.category != category }
             currentState.copy(categoryBudgets = updatedBudgets)
-                .also { repository.saveState(it) }
+                .also { repository.saveActiveProfileState(activeId, it) }
         }
     }
 
@@ -175,14 +283,10 @@ class BreadViewModel(application: Application) : AndroidViewModel(application) {
                 }
                 .sortedByDescending { it.amount }
 
-            // Generate trend points
-            // For simplicity, we'll divide the period into 5 points
             val pointsCount = 5
             val period = now - startTime
             val trend = mutableListOf<TrendPoint>()
             
-            var currentBalanceAtPoint = currentState.totalBalance
-            // We go backwards from now
             for (i in (pointsCount - 1) downTo 0) {
                 val pointTime = startTime + (i.toFloat() / (pointsCount - 1) * period).toLong()
                 val label = when (currentState.selectedTimeRange) {
@@ -192,7 +296,6 @@ class BreadViewModel(application: Application) : AndroidViewModel(application) {
                     else -> ""
                 }
                 
-                // Balance at this point is totalBalance minus all transactions after this point
                 val transactionsAfterPoint = currentState.recentTransactions.filter { it.timestamp > pointTime }
                 val balanceChangeAfter = transactionsAfterPoint.sumOf { 
                     if (it.type == TransactionType.INCOME) it.amount else -it.amount 

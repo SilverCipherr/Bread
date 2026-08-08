@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.yummy.bread.BreadViewModel
 import com.yummy.bread.ui.screens.*
 
@@ -22,12 +24,55 @@ fun BreadNavHost(
         ) {
             composable(Screen.Splash.route) {
                 SplashScreen {
-                    val startRoute = if (viewModel.uiState.value.userName.isNotBlank()) Screen.Dashboard.route else Screen.ProfileSetup.route
-                    navController.navigate(startRoute) {
-                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    val uiState = viewModel.uiState.value
+                    if (uiState.lastActiveProfileId != null && uiState.profiles.any { it.id == uiState.lastActiveProfileId }) {
+                        navController.navigate(Screen.Lock.createRoute(uiState.lastActiveProfileId)) {
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
+                    } else if (uiState.profiles.isNotEmpty()) {
+                        navController.navigate(Screen.ProfileSelector.route) {
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate(Screen.ProfileSetup.route) {
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
                     }
                 }
             }
+            
+            composable(Screen.ProfileSelector.route) {
+                ProfileSelectorScreen(
+                    viewModel = viewModel,
+                    onProfileSelected = { profileId ->
+                        navController.navigate(Screen.Lock.createRoute(profileId))
+                    },
+                    onAddAccount = {
+                        viewModel.logout() // Ensure we are in "Create" mode
+                        navController.navigate(Screen.ProfileSetup.route)
+                    }
+                )
+            }
+            
+            composable(
+                route = Screen.Lock.route,
+                arguments = listOf(navArgument("profileId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val profileId = backStackEntry.arguments?.getString("profileId") ?: ""
+                SecurityLockScreen(
+                    profileId = profileId,
+                    viewModel = viewModel,
+                    onSuccess = {
+                        viewModel.login(profileId)
+                        navController.navigate(Screen.Dashboard.route) {
+                            popUpTo(Screen.ProfileSelector.route) { inclusive = true }
+                            // Also pop the lock screen if we came from splash
+                            popUpTo(Screen.Lock.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
             composable(Screen.Dashboard.route) {
                 DashboardContent(viewModel, navController)
             }
@@ -40,6 +85,26 @@ fun BreadNavHost(
             composable(Screen.Insights.route) {
                 AnalyticsScreen(viewModel)
             }
+            composable(Screen.Settings.route) {
+                SettingsScreen(
+                    viewModel = viewModel,
+                    onNavigateToProfileSetup = { navController.navigate(Screen.ProfileSetup.route) },
+                    onNavigateToSecurity = { navController.navigate(Screen.SecurityPrivacy.route) },
+                    onNavigateToAbout = { navController.navigate(Screen.About.route) },
+                    onLogout = {
+                        viewModel.logout()
+                        navController.navigate(Screen.ProfileSelector.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(Screen.SecurityPrivacy.route) {
+                SecurityPrivacyScreen { navController.popBackStack() }
+            }
+            composable(Screen.About.route) {
+                AboutScreen { navController.popBackStack() }
+            }
             composable(Screen.AddTransaction.route) {
                 AddTransactionScreen(viewModel) {
                     navController.popBackStack()
@@ -48,7 +113,7 @@ fun BreadNavHost(
             composable(Screen.ProfileSetup.route) {
                 ProfileSetupScreen(viewModel) {
                     navController.navigate(Screen.Dashboard.route) {
-                        popUpTo(Screen.ProfileSetup.route) { inclusive = true }
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     }
                 }
             }

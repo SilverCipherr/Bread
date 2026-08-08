@@ -9,19 +9,59 @@ import org.json.JSONObject
 class BreadRepository(context: Context) {
     private val prefs = context.getSharedPreferences("bread_prefs", Context.MODE_PRIVATE)
 
-    fun saveState(state: BreadUiState) {
+    fun saveProfiles(profiles: List<Profile>) {
+        val array = JSONArray()
+        profiles.forEach { profile ->
+            array.put(JSONObject().apply {
+                put("id", profile.id)
+                put("name", profile.name)
+                put("pictureUri", profile.pictureUri?.toString())
+                put("pin", profile.pin)
+                put("initialBalance", profile.initialBalance)
+                put("monthlyIncome", profile.monthlyIncome)
+                put("monthlySavingsGoal", profile.monthlySavingsGoal)
+                put("currency", profile.currency)
+            })
+        }
+        prefs.edit().putString("profiles", array.toString()).apply()
+    }
+
+    fun saveLastActiveProfileId(id: String?) {
+        prefs.edit().putString("last_active_profile_id", id).apply()
+    }
+
+    fun loadLastActiveProfileId(): String? {
+        return prefs.getString("last_active_profile_id", null)
+    }
+
+    fun loadProfiles(): List<Profile> {
+        val json = prefs.getString("profiles", null) ?: return emptyList()
+        val array = JSONArray(json)
+        val profiles = mutableListOf<Profile>()
+        for (i in 0 until array.length()) {
+            val obj = array.getJSONObject(i)
+            profiles.add(Profile(
+                id = obj.getString("id"),
+                name = obj.getString("name"),
+                pictureUri = obj.optString("pictureUri", null)?.takeIf { it != "null" }?.let { Uri.parse(it) },
+                pin = obj.getString("pin"),
+                initialBalance = obj.optDouble("initialBalance", 0.0),
+                monthlyIncome = obj.optDouble("monthlyIncome", 0.0),
+                monthlySavingsGoal = obj.optDouble("monthlySavingsGoal", 0.0),
+                currency = obj.optString("currency", "USD ($)")
+            ))
+        }
+        return profiles
+    }
+
+    fun saveActiveProfileState(profileId: String, state: BreadUiState) {
         prefs.edit().apply {
-            putString("user_name", state.userName)
-            putFloat("total_balance", state.totalBalance.toFloat())
-            putFloat("monthly_income", state.monthlyIncome.toFloat())
-            putFloat("monthly_spend", state.monthlySpend.toFloat())
-            putFloat("monthly_savings_goal", state.monthlySavingsGoal.toFloat())
-            putString("currency", state.currency)
-            putString("profile_picture_uri", state.profilePictureUri?.toString())
+            putFloat("${profileId}_total_balance", state.totalBalance.toFloat())
+            putFloat("${profileId}_monthly_spend", state.monthlySpend.toFloat())
             
             val transactionsArray = JSONArray()
             state.recentTransactions.forEach { transaction ->
-                val json = JSONObject().apply {
+                transactionsArray.put(JSONObject().apply {
                     put("id", transaction.id)
                     put("title", transaction.title)
                     put("category", transaction.category)
@@ -30,77 +70,79 @@ class BreadRepository(context: Context) {
                     put("type", transaction.type.name)
                     put("note", transaction.note)
                     put("timestamp", transaction.timestamp)
-                }
-                transactionsArray.put(json)
+                })
             }
-            putString("transactions", transactionsArray.toString())
+            putString("${profileId}_transactions", transactionsArray.toString())
 
             val budgetsArray = JSONArray()
             state.categoryBudgets.forEach { budget ->
-                val json = JSONObject().apply {
+                budgetsArray.put(JSONObject().apply {
                     put("category", budget.category)
                     put("limit", budget.limit)
                     put("spent", budget.spent)
                     put("icon", budget.icon)
-                }
-                budgetsArray.put(json)
+                })
             }
-            putString("category_budgets", budgetsArray.toString())
+            putString("${profileId}_category_budgets", budgetsArray.toString())
             apply()
         }
     }
 
-    fun loadState(): BreadUiState {
-        val transactionsJson = prefs.getString("transactions", null)
+    fun loadActiveProfileState(profile: Profile): BreadUiState {
+        val profileId = profile.id
+        val transactionsJson = prefs.getString("${profileId}_transactions", null)
         val transactions = mutableListOf<Transaction>()
         if (transactionsJson != null) {
             val array = JSONArray(transactionsJson)
             for (i in 0 until array.length()) {
                 val obj = array.getJSONObject(i)
-                val id = obj.getString("id")
-                if (id in listOf("1", "2", "3", "4")) continue // Skip stale mock data
-                transactions.add(
-                    Transaction(
-                        id = id,
-                        title = obj.getString("title"),
-                        category = obj.getString("category"),
-                        amount = obj.getDouble("amount"),
-                        date = obj.getString("date"),
-                        type = TransactionType.valueOf(obj.getString("type")),
-                        note = obj.optString("note", ""),
-                        timestamp = obj.optLong("timestamp", System.currentTimeMillis())
-                    )
-                )
+                transactions.add(Transaction(
+                    id = obj.getString("id"),
+                    title = obj.getString("title"),
+                    category = obj.getString("category"),
+                    amount = obj.getDouble("amount"),
+                    date = obj.getString("date"),
+                    type = TransactionType.valueOf(obj.getString("type")),
+                    note = obj.optString("note", ""),
+                    timestamp = obj.optLong("timestamp", System.currentTimeMillis())
+                ))
             }
         }
 
-        val budgetsJson = prefs.getString("category_budgets", null)
+        val budgetsJson = prefs.getString("${profileId}_category_budgets", null)
         val categoryBudgets = mutableListOf<CategoryBudget>()
         if (budgetsJson != null) {
             val array = JSONArray(budgetsJson)
             for (i in 0 until array.length()) {
                 val obj = array.getJSONObject(i)
-                categoryBudgets.add(
-                    CategoryBudget(
-                        category = obj.getString("category"),
-                        limit = obj.getDouble("limit"),
-                        spent = obj.getDouble("spent"),
-                        icon = obj.getString("icon")
-                    )
-                )
+                categoryBudgets.add(CategoryBudget(
+                    category = obj.getString("category"),
+                    limit = obj.getDouble("limit"),
+                    spent = obj.getDouble("spent"),
+                    icon = obj.getString("icon")
+                ))
             }
         }
 
         return BreadUiState(
-            userName = prefs.getString("user_name", "") ?: "",
-            totalBalance = prefs.getFloat("total_balance", 0f).toDouble(),
-            monthlyIncome = prefs.getFloat("monthly_income", 0f).toDouble(),
-            monthlySpend = prefs.getFloat("monthly_spend", 0f).toDouble(),
-            monthlySavingsGoal = prefs.getFloat("monthly_savings_goal", 0f).toDouble(),
-            currency = prefs.getString("currency", "USD ($)") ?: "USD ($)",
-            profilePictureUri = prefs.getString("profile_picture_uri", null)?.let { Uri.parse(it) },
+            userName = profile.name,
+            totalBalance = prefs.getFloat("${profileId}_total_balance", profile.initialBalance.toFloat()).toDouble(),
+            monthlyIncome = profile.monthlyIncome,
+            monthlySpend = prefs.getFloat("${profileId}_monthly_spend", 0f).toDouble(),
+            monthlySavingsGoal = profile.monthlySavingsGoal,
+            currency = profile.currency,
+            profilePictureUri = profile.pictureUri,
             recentTransactions = transactions,
-            categoryBudgets = categoryBudgets
+            categoryBudgets = categoryBudgets,
+            isDarkMode = if (prefs.contains("is_dark_mode")) prefs.getBoolean("is_dark_mode", true) else null
         )
+    }
+    
+    fun saveGlobalDarkMode(enabled: Boolean?) {
+        if (enabled != null) {
+            prefs.edit().putBoolean("is_dark_mode", enabled).apply()
+        } else {
+            prefs.edit().remove("is_dark_mode").apply()
+        }
     }
 }

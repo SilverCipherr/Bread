@@ -7,7 +7,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -42,7 +41,10 @@ fun MainScreen(
     val currentRoute = navBackStackEntry?.destination?.route
     val uiState by viewModel.uiState.collectAsState()
 
-    val showBars = currentRoute != Screen.Splash.route && currentRoute != Screen.ProfileSetup.route
+    val showBars = currentRoute != Screen.Splash.route && 
+                   currentRoute != Screen.ProfileSetup.route &&
+                   currentRoute != Screen.ProfileSelector.route &&
+                   currentRoute?.startsWith("lock") != true
 
     Scaffold(
         topBar = {
@@ -64,7 +66,7 @@ fun MainScreen(
                         }
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navController.navigate(Screen.ProfileSetup.route) }) {
+                        IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
                             Box(
                                 modifier = Modifier
                                     .size(40.dp)
@@ -87,11 +89,6 @@ fun MainScreen(
                                     )
                                 }
                             }
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = { /* Notifications */ }) {
-                            Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = Primary)
                         }
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -119,15 +116,14 @@ fun MainScreen(
                 BottomNavBar(
                     selectedRoute = currentRoute ?: Screen.Dashboard.route,
                     onRouteSelected = { route ->
-                        navController.navigate(route) {
-                            // Pop up to the dashboard to avoid building up a large stack
-                            popUpTo(Screen.Dashboard.route) {
-                                saveState = true
+                        if (currentRoute != route) {
+                            navController.navigate(route) {
+                                popUpTo(Screen.Dashboard.route) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            // Avoid multiple copies of the same destination
-                            launchSingleTop = true
-                            // Restore state when reselecting a previously selected item
-                            restoreState = true
                         }
                     }
                 )

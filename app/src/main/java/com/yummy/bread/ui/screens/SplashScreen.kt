@@ -9,10 +9,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.yummy.bread.R
 import com.yummy.bread.ui.theme.Background
+import com.yummy.bread.ui.theme.Primary
+import com.yummy.bread.ui.theme.Secondary
 import kotlinx.coroutines.delay
 
 @Composable
@@ -28,17 +35,55 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
             .background(Background),
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Ambient Background Glows
+        Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .size(400.dp)
+                    .offset(x = (-100).dp, y = (-100).dp)
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(Primary.copy(alpha = 0.15f), Color.Transparent)
+                        )
+                    )
+            )
+            Box(
+                modifier = Modifier
+                    .size(400.dp)
+                    .align(Alignment.BottomEnd)
+                    .offset(x = 100.dp, y = 100.dp)
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(Secondary.copy(alpha = 0.1f), Color.Transparent)
+                        )
+                    )
+            )
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(24.dp)
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.bread_logo),
                 contentDescription = "Logo",
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier.size(160.dp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 "Bread",
                 style = MaterialTheme.typography.displayLarge,
-                color = MaterialTheme.colorScheme.primary
+                color = Primary,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = (-0.02).sp
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                "Your daily dough, managed better.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
             )
         }
     }

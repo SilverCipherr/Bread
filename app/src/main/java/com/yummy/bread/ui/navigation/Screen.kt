@@ -8,4 +8,11 @@ sealed class Screen(val route: String) {
     object Budget : Screen("budget")
     object Insights : Screen("insights")
     object AddTransaction : Screen("add_transaction")
+    object Settings : Screen("settings")
+    object SecurityPrivacy : Screen("security_privacy")
+    object About : Screen("about")
+    object Lock : Screen("lock/{profileId}") {
+        fun createRoute(profileId: String) = "lock/$profileId"
+    }
+    object ProfileSelector : Screen("profile_selector")
 }
