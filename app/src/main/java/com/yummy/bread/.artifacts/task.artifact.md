@@ -1,7 +1,5 @@
-- [x] Fix "Ugly Rectangles" in `GlassModifier.kt`
-    - [x] Remove `.shadow()` calls
-    - [x] Refine 3D effect with dual-layer border/gradient
-- [x] Ensure transparency in `MainScreen.kt`
+- [x] Build Configuration for Dual Installation
+    - [x] Add `debug` build type with `applicationIdSuffix` and `versionNameSuffix` in `app/build.gradle.kts`
 - [x] Verification
-    - [x] Build project
-    - [x] Verify clean glassy look without internal artifacts
+    - [x] Run `./gradlew :app:assembleDebug`
+    - [x] Run `./gradlew :app:assembleRelease`

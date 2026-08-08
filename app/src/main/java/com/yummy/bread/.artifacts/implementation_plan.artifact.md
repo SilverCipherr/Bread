@@ -1,23 +1,23 @@
-# Implementation Plan - Fix Ugly Rectangles and Refine 3D Glass
+# Implementation Plan - Simultaneous Debug and Release Installation
 
-The user reported "ugly rectangle boxes" inside every card. This is caused by the `shadow` modifier bleeding through the transparent glass panels, combined with potential rendering artifacts from the `graphicsLayer` blur effect.
+To allow both the debug and release versions of the app to be installed on your phone at the same time, they need to have different **Application IDs**. I will also add a suffix to the version name so you can identify it in the app info.
 
 ## Proposed Changes
 
-### 1. Fix Glass Modifiers
-- **[MODIFY] [GlassModifier.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/components/GlassModifier.kt)**:
-    - **Remove `.shadow(...)`**: This is the primary source of the dark "ugly" rectangles inside transparent components.
-    - **Refine 3D Effect**: Instead of shadows, use a **dual-border** approach or a more pronounced linear gradient on the border to create depth.
-    - **Fix Blur Layering**: Ensure the `graphicsLayer` blur doesn't create artifacts. I will move the `background` to a separate `drawBehind` or ensure it's applied correctly.
-    - **Robust Alpha**: Even if the user sets a zero-alpha color, I'll ensure the glass effect remains stable.
-
-### 2. Top Bar Refinement
-- **[MODIFY] [MainScreen.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/screens/MainScreen.kt)**:
-    - Set `elevation = 0.dp` (via `shadow` modifier or component param) explicitly for the Top Bar and cards to ensure Material 3 defaults don't add unwanted shadows.
+### 1. Build Configuration
+- **[MODIFY] [app/build.gradle.kts](file:///home/silvercipher/Projects/Bread/app/build.gradle.kts)**:
+    - Add a `debug` build type block.
+    - Set `applicationIdSuffix = ".debug"`. This is required to allow both apps to coexist on the device.
+    - Set `versionNameSuffix = "-debug"`. This will show up in the phone's App Info (e.g., `1.1-beta-debug`).
+    - I will **NOT** change the app name/label, as per your request.
 
 ## Verification Plan
 
+### Automated Build
+- Run `./gradlew :app:assembleDebug` and `./gradlew :app:assembleRelease`.
+
 ### Manual Verification
-- Deploy to device and verify the dark rectangles are gone.
-- Ensure the cards still look "glassy" and have some depth.
-- Verify the Top Bar is clean and perfectly rounded.
+- Install the release APK.
+- Install the debug APK.
+- Verify that both apps appear as separate icons (with the same name) on your phone's home screen.
+- Verify that the debug version shows the `-debug` suffix in the system App Info settings.
