@@ -1,7 +1,0 @@
-- [x] Profile Deletion with Confirmation
-    - [x] Update `BreadRepository.kt` with `deleteProfileData`
-    - [x] Update `BreadViewModel.kt` with `deleteProfile` logic
-    - [x] Update `ProfileSelectorScreen.kt` UI with delete icon and confirmation dialog
-- [x] Verification
-    - [x] Build project
-    - [x] Manually verify deletion workflow
