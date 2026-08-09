@@ -10,11 +10,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,9 +32,44 @@ import com.yummy.bread.ui.theme.Primary
 fun ProfileSelectorScreen(
     viewModel: BreadViewModel,
     onProfileSelected: (String) -> Unit,
-    onAddAccount: () -> Unit
+    onAddAccount: () -> Unit,
+    onEmptyProfiles: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var profileToDelete by remember { mutableStateOf<Profile?>(null) }
+
+    LaunchedEffect(uiState.profiles) {
+        if (uiState.profiles.isEmpty()) {
+            onEmptyProfiles()
+        }
+    }
+
+    if (profileToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { profileToDelete = null },
+            title = { Text("Delete Profile?") },
+            text = { Text("Are you sure you want to delete ${profileToDelete?.name}? This will permanently remove all transactions and data for this profile.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        profileToDelete?.let { viewModel.deleteProfile(it) }
+                        profileToDelete = null
+                    },
+                    colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFFFF375F))
+                ) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { profileToDelete = null }) {
+                    Text("Cancel")
+                }
+            },
+            containerColor = Color(0xFF1C1C1E),
+            titleContentColor = Color.White,
+            textContentColor = Color.White.copy(alpha = 0.7f)
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -59,10 +93,11 @@ fun ProfileSelectorScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
-            items(uiState.profiles) { profile ->
+            items(uiState.profiles, key = { it.id }) { profile ->
                 ProfileCard(
                     profile = profile,
-                    onClick = { onProfileSelected(profile.id) }
+                    onClick = { onProfileSelected(profile.id) },
+                    onDeleteClick = { profileToDelete = profile }
                 )
             }
         }
@@ -88,7 +123,8 @@ fun ProfileSelectorScreen(
 @Composable
 fun ProfileCard(
     profile: Profile,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     GlassCard(
         modifier = Modifier
@@ -99,33 +135,47 @@ fun ProfileCard(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(CircleShape)
-                    .background(Color.DarkGray),
-                contentAlignment = Alignment.Center
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
+                modifier = Modifier.weight(1f)
             ) {
-                if (profile.pictureUri != null) {
-                    Image(
-                        painter = rememberAsyncImagePainter(profile.pictureUri),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Icon(Icons.Default.Person, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(32.dp))
+                Box(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape)
+                        .background(Color.DarkGray),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (profile.pictureUri != null) {
+                        Image(
+                            painter = rememberAsyncImagePainter(profile.pictureUri),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Icon(Icons.Default.Person, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(32.dp))
+                    }
                 }
+                
+                Text(
+                    profile.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
             }
-            
-            Text(
-                profile.name,
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
+
+            IconButton(onClick = onDeleteClick) {
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete Profile",
+                    tint = Color.White.copy(alpha = 0.4f)
+                )
+            }
         }
     }
 }

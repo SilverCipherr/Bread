@@ -145,4 +145,14 @@ class BreadRepository(context: Context) {
             prefs.edit().remove("is_dark_mode").apply()
         }
     }
+
+    fun deleteProfileData(profileId: String) {
+        prefs.edit().apply {
+            remove("${profileId}_total_balance")
+            remove("${profileId}_monthly_spend")
+            remove("${profileId}_transactions")
+            remove("${profileId}_category_budgets")
+            apply()
+        }
+    }
 }

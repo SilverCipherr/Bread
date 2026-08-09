@@ -252,6 +252,25 @@ class BreadViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun deleteProfile(profile: Profile) {
+        repository.deleteProfileData(profile.id)
+        
+        _uiState.update { currentState ->
+            val updatedProfiles = currentState.profiles.filter { it.id != profile.id }
+            repository.saveProfiles(updatedProfiles)
+            
+            val isLastActive = currentState.lastActiveProfileId == profile.id
+            if (isLastActive) {
+                repository.saveLastActiveProfileId(null)
+            }
+            
+            currentState.copy(
+                profiles = updatedProfiles,
+                lastActiveProfileId = if (isLastActive) null else currentState.lastActiveProfileId
+            )
+        }
+    }
+
     fun updateTimeRange(range: String) {
         _uiState.update { it.copy(selectedTimeRange = range) }
         recalculateBreakdown()

@@ -1,38 +1,40 @@
-# Implementation Plan - Logo and Icon Refresh
+# Implementation Plan - Profile Deletion with Confirmation
 
-I will replace the existing app logo and all launcher icons with the newly uploaded design.
+Add the ability for users to delete profiles from the "Who's spending?" screen, including a confirmation dialog to prevent accidental data loss.
 
 ## Proposed Changes
 
-### 1. Resource Cleanup
-I will ensure all legacy `.webp` or older `.png` launcher icons are removed to prevent density-mismatch or duplication issues.
+### 1. Data Layer
+- **[MODIFY] [BreadRepository.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/data/BreadRepository.kt)**:
+    - Add `deleteProfileData(profileId: String)` to remove all shared preferences associated with a specific profile.
 
-### 2. Asset Generation
-Using ImageMagick, I will generate the following from the source at `app/src/main/res/drawable/bread_logo.png`:
+### 2. ViewModel
+- **[MODIFY] [BreadViewModel.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/BreadViewModel.kt)**:
+    - Add `deleteProfile(profile: Profile)` method.
+    - This method will:
+        1. Remove the profile from the `profiles` list in `BreadUiState`.
+        2. Call `repository.saveProfiles()` with the updated list.
+        3. Call `repository.deleteProfileData(profile.id)`.
+        4. Clear `lastActiveProfileId` if the deleted profile was the last active one.
 
-- **Main UI Logo**:
-    - `app/src/main/res/drawable/bread_logo.png` (Resize the source to 512x512 for optimal UI performance).
-
-- **Standard Launcher Icons (`ic_launcher.png` & `ic_launcher_round.png`)**:
-    - `mipmap-mdpi`: 48x48 px
-    - `mipmap-hdpi`: 72x72 px
-    - `mipmap-xhdpi`: 96x96 px
-    - `mipmap-xxhdpi`: 144x144 px
-    - `mipmap-xxxhdpi`: 192x192 px
-
-- **Adaptive Icon Foreground (`ic_launcher_foreground.png`)**:
-    - The logo will be scaled to ~83% (90dp) within a 108dp canvas to ensure it looks "full" while staying safely within system masks.
-    - `mipmap-mdpi`: 108x108 px
-    - `mipmap-hdpi`: 162x162 px
-    - `mipmap-xhdpi`: 216x216 px
-    - `mipmap-xxhdpi`: 324x324 px
-    - `mipmap-xxxhdpi`: 432x432 px
+### 3. UI Layer
+- **[MODIFY] [ProfileSelectorScreen.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/screens/ProfileSelectorScreen.kt)**:
+    - Add state to track the profile currently being considered for deletion (for the confirmation dialog).
+    - Add an `IconButton` with `Icons.Default.Delete` to each `ProfileCard`.
+    - Implement an `AlertDialog` that appears when the delete icon is clicked.
+    - The dialog will ask "Delete [Profile Name]?" and warn about data loss.
+    - Confirming will call `viewModel.deleteProfile(profile)`.
 
 ## Verification Plan
 
 ### Automated Tests
-- Run `./gradlew :app:packageDebugResources` to verify that all new resources are correctly generated and valid.
+- Build the project to ensure no compilation errors.
 
 ### Manual Verification
-- Verify the new logo appears in the **Top App Bar** and **Splash Screen**.
-- Confirm the app icon on the device home screen is sharp and correctly scaled without white borders.
+1. Open the "Who's spending?" screen.
+2. Click the delete icon on a profile.
+3. Verify the confirmation dialog appears with the correct profile name.
+4. Click "Cancel" and verify the profile is NOT deleted.
+5. Click the delete icon again and click "Delete".
+6. Verify the profile is removed from the list.
+7. Restart the app to verify the profile remains deleted (persisted in SharedPreferences).

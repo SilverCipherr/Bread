@@ -49,6 +49,11 @@ fun BreadNavHost(
                     },
                     onAddAccount = {
                         navController.navigate(Screen.ProfileSetup.createRoute(true))
+                    },
+                    onEmptyProfiles = {
+                        navController.navigate(Screen.ProfileSetup.createRoute(true)) {
+                            popUpTo(Screen.ProfileSelector.route) { inclusive = true }
+                        }
                     }
                 )
             }

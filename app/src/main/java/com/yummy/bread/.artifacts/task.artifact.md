@@ -1,7 +1,7 @@
-- [x] Asset Generation for New Logo
-    - [x] Resize `bread_logo.png` to 512x512
-    - [x] Generate standard launcher icons (MDPI to XXXHDPI)
-    - [x] Generate adaptive icon foregrounds (MDPI to XXXHDPI)
+- [x] Profile Deletion with Confirmation
+    - [x] Update `BreadRepository.kt` with `deleteProfileData`
+    - [x] Update `BreadViewModel.kt` with `deleteProfile` logic
+    - [x] Update `ProfileSelectorScreen.kt` UI with delete icon and confirmation dialog
 - [x] Verification
-    - [x] Run `./gradlew :app:packageDebugResources`
-    - [x] Check resource integrity
+    - [x] Build project
+    - [x] Manually verify deletion workflow
