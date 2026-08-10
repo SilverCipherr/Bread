@@ -1,5 +1,0 @@
-- [x] Add author credits and social button to Info Screen
-- [x] README Enhancements
-    - [x] Add "Download Latest Beta" button to `README.md`
-- [x] Verification
-    - [x] Verify README rendering and links
