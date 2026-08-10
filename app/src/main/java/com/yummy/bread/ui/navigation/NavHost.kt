@@ -94,8 +94,13 @@ fun BreadNavHost(
                     onNavigateToAddAccount = { navController.navigate(Screen.ProfileSetup.createRoute(true)) },
                     onNavigateToSecurity = { navController.navigate(Screen.SecurityPrivacy.route) },
                     onNavigateToAbout = { navController.navigate(Screen.About.route) },
-                    onLogout = {
+                    onSwitchAccount = {
                         navController.navigate(Screen.ProfileSelector.route)
+                    },
+                    onLogout = {
+                        navController.navigate(Screen.ProfileSelector.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
                     }
                 )
             }

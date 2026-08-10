@@ -37,6 +37,7 @@ fun SettingsScreen(
     onNavigateToAddAccount: () -> Unit,
     onNavigateToSecurity: () -> Unit,
     onNavigateToAbout: () -> Unit,
+    onSwitchAccount: () -> Unit,
     onLogout: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -123,7 +124,7 @@ fun SettingsScreen(
             GlassCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onLogout() }, 
+                    .clickable { onSwitchAccount() }, 
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
