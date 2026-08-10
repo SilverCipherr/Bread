@@ -1,6 +1,5 @@
-- [ ] Update `AboutScreen` in `InfoScreens.kt`
-    - [ ] Add "Created by SilverCipherr" text
-    - [ ] Add "Follow US" glassy button
-    - [ ] Implement GitHub link redirection
-- [ ] Verification
-    - [ ] Build and test on device
+- [x] Add author credits and social button to Info Screen
+- [x] README Enhancements
+    - [x] Add "Download Latest Beta" button to `README.md`
+- [x] Verification
+    - [x] Verify README rendering and links
