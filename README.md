@@ -11,7 +11,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-purple.svg)]()
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose-orange.svg)]()
 
-<a href="https://github.com/SilverCipherr/Bread/releases/download/V2.3.4-beta/Bread.2.3.4-beta.apk">
+<a href="https://github.com/SilverCipherr/Bread/releases/download/V2.3.4-beta/Bread.2.3.5-beta.apk">
   <img src="https://img.shields.io/badge/Download-Latest_Beta-D0BCFF?style=for-the-badge&logo=android&logoColor=black" alt="Download Latest Beta">
 </a>
 
