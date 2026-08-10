@@ -1,0 +1,1 @@
+/tmp/writeSingleJsonFile458570211772895534/target-device-spec.json 0
