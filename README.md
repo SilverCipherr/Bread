@@ -43,7 +43,10 @@ Switch between different accounts or family members seamlessly. Each profile mai
 
 ### 🛡️ Privacy First
 
-Your data belongs to you. Bread is fully offline-first. No cloud, no tracking. Secure your information with integrated PIN and Biometric (Fingerprint/Face) authentication.
+Your data belongs to you. Bread is fully offline-first.
+- **No Login Required**: Start managing your finances immediately. No Google sign-in or registration is required to access any of the app's features.
+- **Integrated Security**: Secure your information with local PIN and Biometric (Fingerprint/Face) authentication.
+- **Seamless Cloud Backup**: Bread leverages Android's system-level Auto Backup. Your data is encrypted and backed up to your personal Google Drive, allowing for easy restoration on new devices without compromising your privacy. It may need at least  24 hours to google auto syncs the new data when the device is connected to Wi-Fi, charging or idle.
 
 ### 📊 Visual Insights
 

@@ -7,7 +7,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class BreadRepository(context: Context) {
-    private val prefs = context.getSharedPreferences("bread_prefs", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("bread_vault_v1", Context.MODE_PRIVATE)
 
     fun saveProfiles(profiles: List<Profile>) {
         val array = JSONArray()
