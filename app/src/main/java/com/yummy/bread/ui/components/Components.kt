@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yummy.bread.data.Transaction
 import com.yummy.bread.ui.navigation.Screen
-import com.yummy.bread.ui.theme.Primary
-import com.yummy.bread.ui.theme.PrimaryContainer
+import com.yummy.bread.data.TransactionType
+import com.yummy.bread.ui.theme.*
 
 @Composable
 fun GlassCard(
@@ -92,7 +92,14 @@ fun TransactionItem(transaction: Transaction) {
                 }
             }
             Column(horizontalAlignment = Alignment.End) {
-                Text("${if (transaction.amount < 0) "" else "+"}$${transaction.amount}", fontWeight = FontWeight.Bold, color = Color.White)
+                val amountColor = if (transaction.type == TransactionType.INCOME) VibrantGreen else VibrantRed
+                val prefix = if (transaction.type == TransactionType.INCOME) "+" else "-"
+                
+                Text(
+                    text = "$prefix$${transaction.amount}",
+                    fontWeight = FontWeight.Bold,
+                    color = amountColor
+                )
                 Text(transaction.date, style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.5f))
             }
         }

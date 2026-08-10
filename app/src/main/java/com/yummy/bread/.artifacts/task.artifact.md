@@ -1,5 +1,8 @@
-- [x] Create Modern Documentation
-    - [x] Generate modern `README.md` with visual highlights
-    - [x] Generate comprehensive `CONTRIBUTING.md`
-- [x] Verification
-    - [x] Check file formatting and links
+- [/] Dashboard Visual Enhancements
+    - [ ] Update `Color.kt` with `VibrantGreen` and `VibrantRed`
+    - [ ] Update `TransactionItem` in `Components.kt` for signs and colors
+    - [ ] Add status indicators to Bento Grid in `DashboardScreen.kt`
+- [ ] Verification
+    - [ ] Build project
+    - [ ] Verify signs and colors in Recent Transactions
+    - [ ] Verify circular arrow indicators in Monthly cards

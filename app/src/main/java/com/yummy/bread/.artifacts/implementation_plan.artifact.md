@@ -1,38 +1,34 @@
-# Implementation Plan - Modern Documentation
+# Implementation Plan - Dashboard Visual Enhancements
 
-Create a high-quality, catchy `README.md` and a comprehensive `CONTRIBUTING.md` to prepare the "Bread" project for its public debut on GitHub.
+Refine the Dashboard and Transaction visuals with better color coding and status indicators while maintaining the 3D glass aesthetic.
 
-## Proposed Documents
+## Proposed Changes
 
-### 1. `README.md`
-A modern, visual-first README that highlights the app's unique "glassy" aesthetic and core features.
+### 1. Color Palette Refinement
+- **[MODIFY] [Color.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/theme/Color.kt)**:
+    - Define `VibrantGreen` (`#32D74B`) and `VibrantRed` (`#FF453A`) for clear status indicators.
 
-**Structure:**
-- **Header**: Large logo, project name, and catchy tagline.
-- **Visuals**: Placeholders for screenshots/GIFs showing the 3D Glass UI.
-- **Key Features**:
-    - **iOS 17 Inspired UI**: High-end glassmorphism and 3D depth effects.
-    - **Immersive Background**: Dynamic, full-screen animated mesh gradients.
-    - **Multi-Profile**: Seamlessly switch between different financial accounts.
-    - **Privacy First**: Fully offline, secure data storage with PIN & Biometrics.
-    - **Insights**: Beautifully rendered charts for spending trends and budget tracking.
-- **Tech Stack**: Jetpack Compose, Material 3, ViewModel, Flow, etc.
-- **Getting Started**: Quick build instructions for developers.
-- **License**: Apache 2.0.
+### 2. Transaction Item Logic & Colors
+- **[MODIFY] [Components.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/components/Components.kt)**:
+    - Update `TransactionItem` to correctly prefix amounts with `+` for income and `-` for expenses.
+    - Apply `VibrantGreen` to income amounts and `VibrantRed` to expense amounts.
 
-### 2. `CONTRIBUTING.md`
-A welcoming guide for anyone who wants to help improve the project.
-
-**Structure:**
-- **Welcome Message**: Encouraging community participation.
-- **Ways to Contribute**: Bug reports, feature requests, and code contributions.
-- **Workflow**: Forking, branching, and pull request guidelines.
-- **Coding Standards**: Kotlin best practices and Compose UI consistency.
-- **Community**: Link to issues and discussions.
+### 3. Bento Grid Visual Indicators
+- **[MODIFY] [DashboardScreen.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/screens/DashboardScreen.kt)**:
+    - **Monthly Income Card**: Add an `ArrowUpward` icon inside a `VibrantGreen` outlined transparent circle.
+    - **Monthly Spend Card**: Add an `ArrowDownward` icon inside a `VibrantRed` outlined transparent circle.
+    - Ensure these indicators are positioned elegantly within the existing 3D glass cards.
 
 ## Verification Plan
 
+### Automated Tests
+- Build the project to ensure no compilation errors.
+
 ### Manual Verification
-- Verify the `README.md` and `CONTRIBUTING.md` are created in the root directory.
-- Check that all internal links (like the LICENSE link) are correct.
-- Ensure the formatting is crisp and professional.
+1.  Open the Dashboard.
+2.  Observe the "Monthly Income" card and verify the green upward arrow indicator.
+3.  Observe the "Monthly Spend" card and verify the red downward arrow indicator.
+4.  Check the "Recent Transactions" list:
+    *   Verify income has a `+` sign and is green.
+    *   Verify expenses have a `-` sign and are red.
+5.  Confirm that the 3D glass effect (gradients, borders, blur) remains intact on all cards.
