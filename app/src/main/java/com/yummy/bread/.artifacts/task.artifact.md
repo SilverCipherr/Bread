@@ -1,8 +1,6 @@
-- [/] Dashboard Visual Enhancements
-    - [ ] Update `Color.kt` with `VibrantGreen` and `VibrantRed`
-    - [ ] Update `TransactionItem` in `Components.kt` for signs and colors
-    - [ ] Add status indicators to Bento Grid in `DashboardScreen.kt`
+- [ ] Update `AboutScreen` in `InfoScreens.kt`
+    - [ ] Add "Created by SilverCipherr" text
+    - [ ] Add "Follow US" glassy button
+    - [ ] Implement GitHub link redirection
 - [ ] Verification
-    - [ ] Build project
-    - [ ] Verify signs and colors in Recent Transactions
-    - [ ] Verify circular arrow indicators in Monthly cards
+    - [ ] Build and test on device

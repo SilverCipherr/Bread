@@ -12,8 +12,8 @@ android {
         applicationId = "com.yummy.bread"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.1-beta"
+        versionCode = 2
+        versionName = "2.3.1-beta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

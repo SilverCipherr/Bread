@@ -1,34 +1,21 @@
-# Implementation Plan - Dashboard Visual Enhancements
+# Implementation Plan - Info Screen Enhancements
 
-Refine the Dashboard and Transaction visuals with better color coding and status indicators while maintaining the 3D glass aesthetic.
+Add author credits and a social follow button to the "About" screen.
 
 ## Proposed Changes
 
-### 1. Color Palette Refinement
-- **[MODIFY] [Color.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/theme/Color.kt)**:
-    - Define `VibrantGreen` (`#32D74B`) and `VibrantRed` (`#FF453A`) for clear status indicators.
-
-### 2. Transaction Item Logic & Colors
-- **[MODIFY] [Components.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/components/Components.kt)**:
-    - Update `TransactionItem` to correctly prefix amounts with `+` for income and `-` for expenses.
-    - Apply `VibrantGreen` to income amounts and `VibrantRed` to expense amounts.
-
-### 3. Bento Grid Visual Indicators
-- **[MODIFY] [DashboardScreen.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/screens/DashboardScreen.kt)**:
-    - **Monthly Income Card**: Add an `ArrowUpward` icon inside a `VibrantGreen` outlined transparent circle.
-    - **Monthly Spend Card**: Add an `ArrowDownward` icon inside a `VibrantRed` outlined transparent circle.
-    - Ensure these indicators are positioned elegantly within the existing 3D glass cards.
+### UI Components
+- **[MODIFY] [InfoScreens.kt](file:///home/silvercipher/Projects/Bread/app/src/main/java/com/yummy/bread/ui/screens/InfoScreens.kt)**:
+    - Update `AboutScreen` to include:
+        - "Created by SilverCipherr" text below the version number.
+        - A "Follow US" button with a glassy 3D look.
+        - Integration of `LocalUriHandler` to handle the GitHub link.
+        - Use a GitHub-compatible icon from the material icons library.
 
 ## Verification Plan
 
-### Automated Tests
-- Build the project to ensure no compilation errors.
-
 ### Manual Verification
-1.  Open the Dashboard.
-2.  Observe the "Monthly Income" card and verify the green upward arrow indicator.
-3.  Observe the "Monthly Spend" card and verify the red downward arrow indicator.
-4.  Check the "Recent Transactions" list:
-    *   Verify income has a `+` sign and is green.
-    *   Verify expenses have a `-` sign and are red.
-5.  Confirm that the 3D glass effect (gradients, borders, blur) remains intact on all cards.
+- Open the "About" screen.
+- Verify "Created by SilverCipherr" is visible and styled appropriately.
+- Verify the "Follow US" button appears glassy and 3D.
+- Click the button and verify it opens `https://github.com/SilverCipherr` in the browser.

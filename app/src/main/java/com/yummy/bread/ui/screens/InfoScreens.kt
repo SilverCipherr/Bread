@@ -1,8 +1,10 @@
 package com.yummy.bread.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -14,9 +16,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import com.yummy.bread.R
 import com.yummy.bread.ui.components.GlassCard
+import com.yummy.bread.ui.components.glassPanel
 import com.yummy.bread.ui.theme.Background
 import com.yummy.bread.ui.theme.Primary
 
@@ -119,16 +127,50 @@ fun AboutScreen(onBack: () -> Unit) {
                 fontWeight = FontWeight.Bold
             )
             Text(
-                "Version 1.0.0",
+                "Version 2.3.1-beta",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "Created by SilverCipherr",
+                style = MaterialTheme.typography.labelLarge,
+                color = Primary.copy(alpha = 0.8f),
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 "Your daily dough, managed better.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White
             )
+            
+            Spacer(modifier = Modifier.height(40.dp))
+            
+            val uriHandler = LocalUriHandler.current
+            
+            Box(
+                modifier = Modifier
+                    .glassPanel(shape = CircleShape)
+                    .clickable { uriHandler.openUri("https://github.com/SilverCipherr") }
+                    .padding(horizontal = 32.dp, vertical = 16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.github_logo),
+                        contentDescription = "GitHub",
+                        modifier = Modifier.size(50.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        "Follow US",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         }
     }
 }
