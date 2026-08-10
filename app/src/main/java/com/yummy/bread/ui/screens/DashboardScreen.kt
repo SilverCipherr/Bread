@@ -60,7 +60,7 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                             color = Color.White.copy(alpha = 0.7f)
                         )
                         Text(
-                            "${uiState.currency.split(" ").last().removeSurrounding("(", ")")}${uiState.totalBalance}",
+                            "${uiState.currencySymbol}${uiState.totalBalance}",
                             style = MaterialTheme.typography.displayLarge,
                             color = Color.White
                         )
@@ -71,7 +71,6 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
 
             // Bento Grid
             item {
-                val symbol = uiState.currency.split(" ").last().removeSurrounding("(", ")")
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     GlassCard(modifier = Modifier.weight(1f)) {
                         Row(
@@ -81,7 +80,7 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                         ) {
                             Column {
                                 Text("Monthly Income", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.7f))
-                                Text("$symbol${uiState.monthlyIncome}", style = MaterialTheme.typography.headlineMedium, color = Color.White)
+                                Text("${uiState.currencySymbol}${uiState.monthlyIncome}", style = MaterialTheme.typography.headlineMedium, color = Color.White)
                             }
                             Box(
                                 modifier = Modifier
@@ -108,7 +107,7 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                         ) {
                             Column {
                                 Text("Monthly Spend", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.7f))
-                                Text("$symbol${uiState.monthlySpend}", style = MaterialTheme.typography.headlineMedium, color = Color.White)
+                                Text("${uiState.currencySymbol}${uiState.monthlySpend}", style = MaterialTheme.typography.headlineMedium, color = Color.White)
                             }
                             Box(
                                 modifier = Modifier
@@ -132,11 +131,10 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
 
             // Progress Bar
             item {
-                val symbol = uiState.currency.split(" ").last().removeSurrounding("(", ")")
                 GlassCard(modifier = Modifier.fillMaxWidth()) {
                     LiquidProgressBar(
                         progress = uiState.budget.progress,
-                        remainingText = "Remaining Spend: $symbol${uiState.budget.remaining}"
+                        remainingText = "Remaining Spend: ${uiState.currencySymbol}${uiState.budget.remaining}"
                     )
                 }
             }
@@ -161,7 +159,7 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
 
             // Transactions List
             items(uiState.recentTransactions) { transaction ->
-                TransactionItem(transaction)
+                TransactionItem(transaction, uiState.currencySymbol)
             }
         }
     }

@@ -40,7 +40,7 @@ fun GlassCard(
 }
 
 @Composable
-fun TransactionItem(transaction: Transaction) {
+fun TransactionItem(transaction: Transaction, currencySymbol: String) {
     val icon = when (transaction.category) {
         "Food" -> Icons.Default.Restaurant
         "Transport" -> Icons.Default.DirectionsCar
@@ -96,7 +96,7 @@ fun TransactionItem(transaction: Transaction) {
                 val prefix = if (transaction.type == TransactionType.INCOME) "+" else "-"
                 
                 Text(
-                    text = "$prefix$${transaction.amount}",
+                    text = "$prefix$currencySymbol${transaction.amount}",
                     fontWeight = FontWeight.Bold,
                     color = amountColor
                 )

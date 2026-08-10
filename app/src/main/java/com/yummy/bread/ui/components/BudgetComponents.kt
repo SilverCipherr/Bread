@@ -49,7 +49,7 @@ fun TotalBudgetSummaryCard(
                 Text(
                     "$symbol${spent.toInt()}",
                     style = MaterialTheme.typography.displayLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = Color.White
                 )
                 Text(
                     " / $symbol${total.toInt()}",
@@ -97,7 +97,7 @@ fun TotalBudgetSummaryCard(
                 Text(
                     "$symbol${(total - spent).coerceAtLeast(0.0).toInt()} Left",
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = Color.White.copy(alpha = 0.7f),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -147,12 +147,12 @@ fun CategoryBudgetCard(
                     ) {
                         Icon(icon, contentDescription = null, tint = progressColor, modifier = Modifier.size(20.dp))
                     }
-                    Text(budget.category, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                    Text(budget.category, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold, color = Color.White)
                 }
                 
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("$symbol${budget.spent.toInt()}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
-                    Text("of $symbol${budget.limit.toInt()}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
+                    Text("$symbol${budget.spent.toInt()}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("of $symbol${budget.limit.toInt()}", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.6f))
                 }
             }
             

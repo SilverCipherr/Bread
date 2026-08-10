@@ -106,7 +106,7 @@ fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostCo
                 contentPadding = PaddingValues(bottom = 20.dp)
             ) {
                 items(filteredTransactions) { transaction ->
-                    TransactionItem(transaction)
+                    TransactionItem(transaction, uiState.currencySymbol)
                 }
             }
         }
@@ -138,6 +138,7 @@ fun BudgetPlannerScreen(viewModel: BreadViewModel) {
                 showDialog = false
                 editingBudget = null
             },
+            currencySymbol = uiState.currencySymbol,
             initialBudget = editingBudget,
             isEditing = editingBudget != null
         )
@@ -152,7 +153,7 @@ fun BudgetPlannerScreen(viewModel: BreadViewModel) {
         Text(
             "Budget",
             style = MaterialTheme.typography.displayLarge,
-            color = Primary
+            color = Color.White
         )
         Spacer(modifier = Modifier.height(24.dp))
         
@@ -167,7 +168,7 @@ fun BudgetPlannerScreen(viewModel: BreadViewModel) {
         Text(
             "Categories",
             style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = Color.White
         )
         
         Spacer(modifier = Modifier.height(16.dp))

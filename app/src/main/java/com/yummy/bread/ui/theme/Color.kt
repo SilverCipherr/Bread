@@ -2,7 +2,7 @@ package com.yummy.bread.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Primary = Color(0xFFD0BCFF)
+val Primary = Color(0xFFBAB0FF)
 val OnPrimary = Color(0xFF3C0091)
 val PrimaryContainer = Color(0xFFA078FF)
 val OnPrimaryContainer = Color(0xFF340080)

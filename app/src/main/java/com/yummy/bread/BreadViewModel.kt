@@ -37,6 +37,7 @@ data class BreadUiState(
 ) {
     val budget: Budget get() = Budget(monthlyIncome, monthlySavingsGoal, monthlySpend)
     val activeProfile: Profile? get() = profiles.find { it.id == activeProfileId }
+    val currencySymbol: String get() = currency.split(" ").last().removeSurrounding("(", ")")
 }
 
 class BreadViewModel(application: Application) : AndroidViewModel(application) {

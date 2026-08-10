@@ -35,6 +35,7 @@ import com.yummy.bread.ui.theme.Tertiary
 fun BudgetDialog(
     onDismiss: () -> Unit,
     onConfirm: (category: String, limit: Double, icon: String) -> Unit,
+    currencySymbol: String,
     initialBudget: CategoryBudget? = null,
     isEditing: Boolean = false
 ) {
@@ -55,12 +56,15 @@ fun BudgetDialog(
     )
 
     Dialog(onDismissRequest = onDismiss) {
-        Surface(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .clip(RoundedCornerShape(32.dp)),
-            color = Background
+                .glassPanelHeavy(
+                    shape = RoundedCornerShape(32.dp),
+                    opacity = 0.60f,
+                    blur = 100f
+                )
         ) {
             Column(
                 modifier = Modifier
@@ -72,13 +76,13 @@ fun BudgetDialog(
                 Text(
                     text = if (isEditing) "Edit Budget" else "Set New Budget",
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Primary
+                    color =Color(0xFFffffff)
                 )
 
                 if (!isEditing) {
                     // Category Picker
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        Text("SELECT CATEGORY", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                        Text("SELECT CATEGORY", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.6f))
                         Spacer(modifier = Modifier.height(16.dp))
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(4),
@@ -103,7 +107,7 @@ fun BudgetDialog(
                                         Icon(
                                             cat.icon,
                                             contentDescription = null,
-                                            tint = if (isSelected) Color.Black else Color.White,
+                                            tint = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f),
                                             modifier = Modifier.size(20.dp)
                                         )
                                     }
@@ -111,7 +115,7 @@ fun BudgetDialog(
                                     Text(
                                         cat.name, 
                                         style = MaterialTheme.typography.labelSmall, 
-                                        color = if (isSelected) Primary else Color.Gray,
+                                        color = if (isSelected) Primary else Color.White.copy(alpha = 0.7f),
                                         maxLines = 1
                                     )
                                 }
@@ -129,13 +133,13 @@ fun BudgetDialog(
                             modifier = Modifier
                                 .size(48.dp)
                                 .clip(CircleShape)
-                                .background(Primary.copy(alpha = 0.2f)),
+                                .background(Color(0x00ff0000).copy(alpha = 0.8f)),
                             contentAlignment = Alignment.Center
                         ) {
                             val cat = categories.find { it.name == selectedCategory }
                             Icon(cat?.icon ?: Icons.Default.Category, contentDescription = null, tint = Primary)
                         }
-                        Text(selectedCategory, style = MaterialTheme.typography.headlineSmall)
+                        Text(selectedCategory, style = MaterialTheme.typography.headlineSmall, color = Color.White)
                     }
                 }
 
@@ -143,11 +147,13 @@ fun BudgetDialog(
                 TextField(
                     value = limit,
                     onValueChange = { if (it.all { c -> c.isDigit() || it == "." }) limit = it },
-                    label = { Text("Monthly Limit") },
-                    prefix = { Text("$ ") },
+                    label = { Text("Monthly Limit", color = Color.White.copy(alpha = 0.6f)) },
+                    prefix = { Text("$currencySymbol ", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     colors = TextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
                         focusedContainerColor = Color.White.copy(alpha = 0.05f),
                         unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
                         focusedIndicatorColor = Primary,
@@ -163,7 +169,7 @@ fun BudgetDialog(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Cancel", color = Color.Gray)
+                        Text("Cancel", color = Color.White.copy(alpha = 0.6f))
                     }
                     Button(
                         onClick = {
@@ -177,7 +183,7 @@ fun BudgetDialog(
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Text("Confirm", color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Confirm", color = Color.White, fontWeight = FontWeight.Bold)
                     }
                 }
             }

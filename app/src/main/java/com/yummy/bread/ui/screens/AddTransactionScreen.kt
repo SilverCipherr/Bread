@@ -39,6 +39,7 @@ fun AddTransactionScreen(
     viewModel: BreadViewModel,
     onDismiss: () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     var type by remember { mutableStateOf(TransactionType.EXPENSE) }
     var amount by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("Food") }
@@ -122,7 +123,7 @@ fun AddTransactionScreen(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("Enter Amount", style = MaterialTheme.typography.labelMedium, color = Color.Gray)
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("$", style = MaterialTheme.typography.displayLarge, color = Primary)
+                            Text(uiState.currencySymbol, style = MaterialTheme.typography.displayLarge, color = Primary)
                             TextField(
                                 value = amount,
                                 onValueChange = { newValue ->
