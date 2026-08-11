@@ -46,7 +46,7 @@ Switch between different accounts or family members seamlessly. Each profile mai
 Your data belongs to you. Bread is fully offline-first.
 - **No Login Required**: Start managing your finances immediately. No Google sign-in or registration is required to access any of the app's features.
 - **Integrated Security**: Secure your information with local PIN and Biometric (Fingerprint/Face) authentication.
-- **Seamless Cloud Backup**: Bread leverages Android's system-level Auto Backup. Your data is encrypted and backed up to your personal Google Drive, allowing for easy restoration on new devices without compromising your privacy. It may need at least  24 hours to google auto syncs the new data when the device is connected to Wi-Fi, charging or idle.
+- **Seamless Cloud Backup**: Bread leverages Android's system-level Auto Backup. Your data is encrypted and backed up to your personal Google Drive, allowing for easy restoration on new devices without compromising your privacy. It may need at least  24 hours for Google to auto sync the new data when the device is connected to Wi-Fi, charging or idle.
 
 ### 📊 Visual Insights
 
@@ -57,7 +57,7 @@ Gain clarity on your spending with beautifully rendered charts. Track your balan
 - **UI**: 100% Jetpack Compose with Material 3
 - **Language**: Kotlin
 - **Architecture**: MVVM with StateFlow
-- **Persistence**: SharedPreferences (Encrypted logic)
+- **Persistence**: SharedPreferences (Encrypted logic)google
 - **Image Loading**: Coil
 - **Security**: Android Biometric Library
 
