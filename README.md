@@ -31,7 +31,11 @@
 
 ### 🧊 3D Glassmorphism UI
 
-Immerse yourself in a premium interface inspired by iOS 17. Every card, button, and bar features realistic 3D depth, light simulation, and real-time blurring for a truly tactile feel.(Light mode is not implemented yet.)
+Immerse yourself in a premium interface inspired by iOS 17. Every card, button, and bar features realistic 3D depth, light simulation, and real-time blurring for a truly tactile feel.
+
+### 🌗 Adaptive Theme Support
+
+Experience the elegance of Bread in any lighting. The app features full support for both **Light** and **Dark** modes. The "Glassmorphism" UI dynamically adapts its glows, transparency, and contrast to ensure perfect readability and a premium aesthetic regardless of your system theme.
 
 ### 🌈 Immersive Backgrounds
 
