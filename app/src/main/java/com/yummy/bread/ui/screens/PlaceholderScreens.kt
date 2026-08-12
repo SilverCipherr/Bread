@@ -51,10 +51,10 @@ import com.yummy.bread.ui.theme.Tertiary
 fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostController) {
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
-    
+
     val filteredTransactions = remember(searchQuery, uiState.recentTransactions) {
-        uiState.recentTransactions.filter { 
-            it.category.contains(searchQuery, ignoreCase = true) || 
+        uiState.recentTransactions.filter {
+            it.category.contains(searchQuery, ignoreCase = true) ||
             it.note.contains(searchQuery, ignoreCase = true)
         }
     }
@@ -68,36 +68,36 @@ fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostCo
         Text(
             "History",
             style = MaterialTheme.typography.displayLarge,
-            color = Primary
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(20.dp))
-        
+
         TextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            placeholder = { Text("Search transactions...", color = Color.White.copy(alpha = 0.5f)) },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.White.copy(alpha = 0.5f)) },
+            placeholder = { Text("Search transactions...", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)) },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp)),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedContainerColor = Color.White.copy(alpha = 0.05f),
-                unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                focusedContainerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.05f),
+                unfocusedContainerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.05f),
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
             singleLine = true
         )
-        
+
         Spacer(modifier = Modifier.height(20.dp))
 
         if (filteredTransactions.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     if (searchQuery.isEmpty()) "No transactions yet" else "No matching transactions",
-                    color = Color.White.copy(alpha = 0.5f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                 )
             }
         } else {
@@ -117,7 +117,7 @@ fun TransactionHistoryScreen(viewModel: BreadViewModel, navController: NavHostCo
 fun BudgetPlannerScreen(viewModel: BreadViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     val symbol = uiState.currency.split(" ").last().removeSurrounding("(", ")")
-    
+
     val totalBudget = uiState.monthlyIncome - uiState.monthlySavingsGoal
 
     var showDialog by remember { mutableStateOf(false) }
@@ -125,7 +125,7 @@ fun BudgetPlannerScreen(viewModel: BreadViewModel) {
 
     if (showDialog) {
         BudgetDialog(
-            onDismiss = { 
+            onDismiss = {
                 showDialog = false
                 editingBudget = null
             },
@@ -153,24 +153,24 @@ fun BudgetPlannerScreen(viewModel: BreadViewModel) {
         Text(
             "Budget",
             style = MaterialTheme.typography.displayLarge,
-            color = Color.White
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         TotalBudgetSummaryCard(
             spent = uiState.monthlySpend,
             total = totalBudget,
             symbol = symbol
         )
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         Text(
             "Categories",
             style = MaterialTheme.typography.headlineMedium,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onSurface
         )
-        
+
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn(
@@ -179,7 +179,7 @@ fun BudgetPlannerScreen(viewModel: BreadViewModel) {
         ) {
             items(uiState.categoryBudgets) { budget ->
                 CategoryBudgetCard(
-                    budget = budget, 
+                    budget = budget,
                     symbol = symbol,
                     onEditClick = {
                         editingBudget = budget
@@ -190,17 +190,17 @@ fun BudgetPlannerScreen(viewModel: BreadViewModel) {
                     }
                 )
             }
-            
+
             item {
                 OutlinedButton(
                     onClick = { showDialog = true },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape = CircleShape,
-                    border = BorderStroke(1.dp, Primary.copy(alpha = 0.3f))
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
                 ) {
                     Icon(Icons.Default.AddCircle, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Set New Budget", color = Primary)
+                    Text("Set New Budget", color = MaterialTheme.colorScheme.primary)
                 }
             }
         }
@@ -211,7 +211,7 @@ fun BudgetPlannerScreen(viewModel: BreadViewModel) {
 fun AnalyticsScreen(viewModel: BreadViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     val symbol = uiState.currency.split(" ").last().removeSurrounding("(", ")")
-    
+
     val totalSpent = uiState.spendingBreakdown.sumOf { it.amount }
 
     Column(
@@ -221,13 +221,13 @@ fun AnalyticsScreen(viewModel: BreadViewModel) {
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.height(20.dp))
-        
+
         // Header
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 "Spending Overview",
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 "Your financial breakdown for this period.",
@@ -235,16 +235,16 @@ fun AnalyticsScreen(viewModel: BreadViewModel) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         TimeToggle(
             selectedRange = uiState.selectedTimeRange,
             onRangeSelected = { viewModel.updateTimeRange(it) }
         )
-        
+
         Spacer(modifier = Modifier.height(32.dp))
-        
+
         // Donut Chart Card
         GlassCard(modifier = Modifier.fillMaxWidth()) {
             DonutChart(
@@ -252,9 +252,9 @@ fun AnalyticsScreen(viewModel: BreadViewModel) {
                 totalText = totalSpent.toInt().toString(),
                 symbol = symbol
             )
-            
+
             Spacer(modifier = Modifier.height(32.dp))
-            
+
             // Legend
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 uiState.spendingBreakdown.chunked(2).forEach { rowItems ->
@@ -270,7 +270,7 @@ fun AnalyticsScreen(viewModel: BreadViewModel) {
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Column {
-                                    Text(item.category, style = MaterialTheme.typography.labelMedium, color = Color.White)
+                                    Text(item.category, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurface)
                                     Text("${(item.percentage * 100).toInt()}%", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
@@ -282,13 +282,13 @@ fun AnalyticsScreen(viewModel: BreadViewModel) {
                 }
             }
         }
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         // Balance Trend Card
         GlassCard(modifier = Modifier.fillMaxWidth()) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text("Balance Trend", style = MaterialTheme.typography.labelLarge, color = Color.White, fontWeight = FontWeight.Bold)
+                Text("Balance Trend", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
                 Surface(
                     color = Tertiary.copy(alpha = 0.1f),
                     shape = CircleShape,
@@ -301,12 +301,12 @@ fun AnalyticsScreen(viewModel: BreadViewModel) {
                     }
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             BalanceTrendChart(points = uiState.balanceTrend)
         }
-        
+
         Spacer(modifier = Modifier.height(100.dp))
     }
 }
@@ -316,7 +316,7 @@ fun AnalyticsScreen(viewModel: BreadViewModel) {
 fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetupComplete: () -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
     val isEditing = uiState.activeProfileId != null && !isNew
-    
+
     // Use isNew as a key for remember to force reset when creating a new account
     var name by remember(uiState.activeProfileId, isNew) { mutableStateOf(if (isNew) "" else uiState.userName) }
     var balance by remember(uiState.activeProfileId, isNew) { mutableStateOf(if (isNew || uiState.totalBalance == 0.0) "" else uiState.totalBalance.toString()) }
@@ -325,12 +325,12 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetu
     var pin by remember(uiState.activeProfileId, isNew) { mutableStateOf("") }
     var selectedCurrency by remember(uiState.activeProfileId, isNew) { mutableStateOf(if (isNew) "USD ($)" else uiState.currency) }
     var selectedImageUri by remember(uiState.activeProfileId, isNew) { mutableStateOf<android.net.Uri?>(if (isNew) null else uiState.profilePictureUri) }
-    
+
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> selectedImageUri = uri }
     )
-    
+
     val focusManager = LocalFocusManager.current
 
     Box(
@@ -347,7 +347,7 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetu
             Text(
                 if (isEditing) "Edit Profile" else "Set Up Your Profile",
                 style = MaterialTheme.typography.headlineLarge,
-                color = Primary,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(top = 40.dp)
             )
             Text(
@@ -363,8 +363,8 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetu
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
-                    .background(Color.DarkGray)
-                    .clickable { 
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .clickable {
                         photoPickerLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
@@ -379,19 +379,19 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetu
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(60.dp), tint = Color.Gray)
+                    Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(60.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
                 }
-                
+
                 // Upload Overlay
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.4f)),
+                        .background(Color.Black.copy(alpha = 0.2f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.AddAPhoto, contentDescription = null, tint = Primary, modifier = Modifier.size(24.dp))
-                        Text("Upload", color = Primary, style = MaterialTheme.typography.labelSmall)
+                        Icon(Icons.Default.AddAPhoto, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
+                        Text("Upload", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelSmall)
                     }
                 }
             }
@@ -414,7 +414,7 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetu
                             disabledContainerColor = Color.Transparent,
                         )
                     )
-                    
+
                     TextField(
                         value = balance,
                         onValueChange = { newValue ->
@@ -434,7 +434,7 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetu
                             disabledContainerColor = Color.Transparent,
                         )
                     )
-                    
+
                     TextField(
                         value = income,
                         onValueChange = { newValue ->
@@ -454,7 +454,7 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetu
                             disabledContainerColor = Color.Transparent,
                         )
                     )
-                    
+
                     TextField(
                         value = goal,
                         onValueChange = { newValue ->
@@ -513,8 +513,8 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetu
                             Surface(
                                 onClick = { selectedCurrency = currency },
                                 shape = CircleShape,
-                                color = if (isSelected) Primary.copy(alpha = 0.2f) else Color.Transparent,
-                                border = if (isSelected) BorderStroke(1.dp, Primary.copy(alpha = 0.5f)) else BorderStroke(1.dp, Color.White.copy(alpha = 0.1f)),
+                                color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else Color.Transparent,
+                                border = if (isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)) else BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)),
                                 modifier = Modifier.height(40.dp)
                             ) {
                                 Box(
@@ -524,7 +524,7 @@ fun ProfileSetupScreen(viewModel: BreadViewModel, isNew: Boolean = false, onSetu
                                     Text(
                                         currency, 
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = if (isSelected) Primary else MaterialTheme.colorScheme.onSurfaceVariant
+                                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }

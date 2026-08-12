@@ -57,12 +57,12 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                         Text(
                             "Total Balance",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color.White.copy(alpha = 0.7f)
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                         )
                         Text(
                             "${uiState.currencySymbol}${uiState.totalBalance}",
                             style = MaterialTheme.typography.displayLarge,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -79,8 +79,8 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column {
-                                Text("Monthly Income", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.7f))
-                                Text("${uiState.currencySymbol}${uiState.monthlyIncome}", style = MaterialTheme.typography.headlineMedium, color = Color.White)
+                                Text("Monthly Income", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+                                Text("${uiState.currencySymbol}${uiState.monthlyIncome}", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onSurface)
                             }
                             Box(
                                 modifier = Modifier
@@ -106,8 +106,8 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column {
-                                Text("Monthly Spend", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.7f))
-                                Text("${uiState.currencySymbol}${uiState.monthlySpend}", style = MaterialTheme.typography.headlineMedium, color = Color.White)
+                                Text("Monthly Spend", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+                                Text("${uiState.currencySymbol}${uiState.monthlySpend}", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onSurface)
                             }
                             Box(
                                 modifier = Modifier
@@ -146,7 +146,7 @@ fun DashboardContent(viewModel: BreadViewModel, navController: NavHostController
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Recent Transactions", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+                    Text("Recent Transactions", style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface)
                      MoltenButton(text = "See All", onClick = {
                          navController.navigate(Screen.History.route) {
                              popUpTo(Screen.Dashboard.route) { saveState = true }

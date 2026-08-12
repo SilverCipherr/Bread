@@ -25,6 +25,7 @@ import com.yummy.bread.data.CategorySpend
 import com.yummy.bread.data.TrendPoint
 import com.yummy.bread.ui.theme.Primary
 import com.yummy.bread.ui.theme.Tertiary
+import com.yummy.bread.ui.theme.LocalGlassColors
 
 @Composable
 fun DonutChart(
@@ -33,12 +34,14 @@ fun DonutChart(
     symbol: String,
     modifier: Modifier = Modifier
 ) {
+    val outlineColor = MaterialTheme.colorScheme.outline
+    
     Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.size(220.dp)) {
             var startAngle = -90f
             if (breakdown.isEmpty()) {
                 drawArc(
-                    color = Color.White.copy(alpha = 0.1f),
+                    color = outlineColor.copy(alpha = 0.1f),
                     startAngle = 0f,
                     sweepAngle = 360f,
                     useCenter = false,
@@ -64,8 +67,8 @@ fun DonutChart(
             modifier = Modifier
                 .size(140.dp)
                 .clip(CircleShape)
-                .background(Color(0xFF060E20).copy(alpha = 0.8f))
-                .border(1.dp, Color.White.copy(alpha = 0.1f), CircleShape),
+                .background(LocalGlassColors.current.background.copy(alpha = 0.8f))
+                .border(1.dp, outlineColor.copy(alpha = 0.1f), CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -77,7 +80,7 @@ fun DonutChart(
                 Text(
                     "$symbol$totalText",
                     style = MaterialTheme.typography.headlineLarge,
-                    color = Primary,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -93,6 +96,8 @@ fun BalanceTrendChart(
     if (points.size < 2) return
 
     Box(modifier = modifier.height(180.dp).fillMaxWidth()) {
+        val onSurface = MaterialTheme.colorScheme.onSurface
+        val primary = MaterialTheme.colorScheme.primary
         Canvas(modifier = Modifier.fillMaxSize()) {
             val width = size.width
             val height = size.height
@@ -136,26 +141,26 @@ fun BalanceTrendChart(
             drawPath(
                 path = fillPath,
                 brush = Brush.verticalGradient(
-                    colors = listOf(Primary.copy(alpha = 0.3f), Color.Transparent)
+                    colors = listOf(primary.copy(alpha = 0.3f), Color.Transparent)
                 )
             )
 
             // Draw Line
             drawPath(
                 path = path,
-                color = Primary,
+                color = primary,
                 style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round)
             )
             
             // Draw Data Points (Last two or all)
             coords.forEach { coord ->
                 drawCircle(
-                    color = Primary,
+                    color = primary,
                     radius = 5.dp.toPx(),
                     center = coord
                 )
                 drawCircle(
-                    color = Color.White,
+                    color = onSurface,
                     radius = 3.dp.toPx(),
                     center = coord
                 )
@@ -201,15 +206,15 @@ fun TimeToggle(
                     .background(
                         if (isSelected) {
                             Brush.verticalGradient(
-                                listOf(Primary.copy(alpha = 0.2f), Primary.copy(alpha = 0.5f))
+                                listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
                             )
                         } else {
-                            Brush.linearGradient(listOf(Color.White.copy(alpha = 0.05f), Color.White.copy(alpha = 0.05f)))
+                            Brush.linearGradient(listOf(MaterialTheme.colorScheme.outline.copy(alpha = 0.05f), MaterialTheme.colorScheme.outline.copy(alpha = 0.05f)))
                         }
                     )
                     .border(
                         1.dp,
-                        if (isSelected) Primary.copy(alpha = 0.3f) else Color.White.copy(alpha = 0.05f),
+                        if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.05f),
                         CircleShape
                     )
                     .clickable { onRangeSelected(range) },
@@ -218,7 +223,7 @@ fun TimeToggle(
                 Text(
                     text = range,
                     style = MaterialTheme.typography.labelMedium,
-                    color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                 )
             }

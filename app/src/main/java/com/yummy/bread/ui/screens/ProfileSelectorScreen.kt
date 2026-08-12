@@ -27,6 +27,7 @@ import com.yummy.bread.data.Profile
 import com.yummy.bread.ui.components.GlassCard
 import com.yummy.bread.ui.theme.Background
 import com.yummy.bread.ui.theme.Primary
+import com.yummy.bread.ui.theme.VibrantRed
 
 @Composable
 fun ProfileSelectorScreen(
@@ -55,7 +56,7 @@ fun ProfileSelectorScreen(
                         profileToDelete?.let { viewModel.deleteProfile(it) }
                         profileToDelete = null
                     },
-                    colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFFFF375F))
+                    colors = ButtonDefaults.textButtonColors(contentColor = VibrantRed)
                 ) {
                     Text("Delete")
                 }
@@ -65,9 +66,9 @@ fun ProfileSelectorScreen(
                     Text("Cancel")
                 }
             },
-            containerColor = Color(0xFF1C1C1E),
-            titleContentColor = Color.White,
-            textContentColor = Color.White.copy(alpha = 0.7f)
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            textContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
         )
     }
 
@@ -82,7 +83,7 @@ fun ProfileSelectorScreen(
         Text(
             "Who's spending?",
             style = MaterialTheme.typography.displayMedium,
-            color = Primary,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold
         )
         
@@ -107,13 +108,13 @@ fun ProfileSelectorScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Primary.copy(alpha = 0.1f)),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
             shape = RoundedCornerShape(16.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, Primary.copy(alpha = 0.3f))
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
         ) {
-            Icon(Icons.Default.Add, contentDescription = null, tint = Primary)
+            Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             Spacer(modifier = Modifier.width(12.dp))
-            Text("Add Account", color = Primary, fontWeight = FontWeight.Bold)
+            Text("Add Account", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
         }
         
         Spacer(modifier = Modifier.height(40.dp))
@@ -164,7 +165,7 @@ fun ProfileCard(
                 Text(
                     profile.name,
                     style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -173,7 +174,7 @@ fun ProfileCard(
                 Icon(
                     Icons.Default.Delete,
                     contentDescription = "Delete Profile",
-                    tint = Color.White.copy(alpha = 0.4f)
+                    tint = VibrantRed
                 )
             }
         }

@@ -46,7 +46,7 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
             Text(
                 "Bread",
                 style = MaterialTheme.typography.displayLarge,
-                color = Primary,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = (-0.02).sp
             )

@@ -12,6 +12,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import com.yummy.bread.ui.theme.*
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.asComposeRenderEffect
+import android.graphics.RenderEffect as AndroidRenderEffect
+import android.os.Build
+
 
 @Composable
 fun GlassBackground(
@@ -39,18 +44,32 @@ fun GlassBackground(
         label = "phase2"
     )
 
+    val glassColors = LocalGlassColors.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(glassColors.background)
     ) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .then(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        Modifier.graphicsLayer {
+                            renderEffect = AndroidRenderEffect
+                                .createBlurEffect(80f, 80f, android.graphics.Shader.TileMode.MIRROR)
+                                .asComposeRenderEffect()
+                        }
+                    } else Modifier
+                )
+        ) {
             val maxRadius = size.maxDimension * 1.8f
             
             // Layer 1: Indigo
             drawRect(
                 brush = Brush.radialGradient(
-                    colors = listOf(Glow1.copy(alpha = 0.6f), Color.Transparent),
+                    colors = listOf(glassColors.glows[0].copy(alpha = 0.6f), Color.Transparent),
                     center = Offset(
                         x = size.width * (-0.2f + 1.4f * phase1),
                         y = size.height * (-0.2f + 1.4f * phase2)
@@ -62,7 +81,7 @@ fun GlassBackground(
             // Layer 2: Sky
             drawRect(
                 brush = Brush.radialGradient(
-                    colors = listOf(Glow2.copy(alpha = 0.5f), Color.Transparent),
+                    colors = listOf(glassColors.glows[1].copy(alpha = 0.5f), Color.Transparent),
                     center = Offset(
                         x = size.width * (1.2f - 1.4f * phase2),
                         y = size.height * (-0.2f + 1.4f * phase1)
@@ -74,7 +93,7 @@ fun GlassBackground(
             // Layer 3: Rose
             drawRect(
                 brush = Brush.radialGradient(
-                    colors = listOf(Glow3.copy(alpha = 0.5f), Color.Transparent),
+                    colors = listOf(glassColors.glows[2].copy(alpha = 0.5f), Color.Transparent),
                     center = Offset(
                         x = size.width * (-0.2f + 1.4f * phase2),
                         y = size.height * (1.2f - 1.4f * phase1)
@@ -86,7 +105,7 @@ fun GlassBackground(
             // Layer 4: Green
             drawRect(
                 brush = Brush.radialGradient(
-                    colors = listOf(Glow4.copy(alpha = 0.4f), Color.Transparent),
+                    colors = listOf(glassColors.glows[3].copy(alpha = 0.4f), Color.Transparent),
                     center = Offset(
                         x = size.width * (1.2f - 1.4f * phase1),
                         y = size.height * (1.2f - 1.4f * phase2)

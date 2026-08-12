@@ -95,7 +95,7 @@ fun MainScreen(
                                             Icon(
                                                 Icons.Default.Person,
                                                 contentDescription = "Profile",
-                                                tint = Color.White
+                                                tint = MaterialTheme.colorScheme.onSurface
                                             )
                                         }
                                     }
@@ -116,12 +116,12 @@ fun MainScreen(
                 if (showBars && currentRoute == Screen.Dashboard.route) {
                     FloatingActionButton(
                         onClick = { navController.navigate(Screen.AddTransaction.route) },
-                        containerColor = Primary.copy(alpha = 0.9f),
-                        contentColor = Color.White,
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
                         shape = CircleShape,
                         modifier = Modifier
                             .size(64.dp)
-                            .border(0.5.dp, Color.White.copy(alpha = 0.3f), CircleShape)
+                            .border(0.5.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f), CircleShape)
                     ) {
                         Icon(Icons.Default.Add, contentDescription = "Add", modifier = Modifier.size(32.dp))
                     }

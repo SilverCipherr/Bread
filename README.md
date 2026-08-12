@@ -11,8 +11,8 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-purple.svg)]()
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose-orange.svg)]()
 
-<a href="https://github.com/SilverCipherr/Bread/releases/download/V2.3.5-beta/Bread.2.3.5-beta.apk">
-  <img src="https://img.shields.io/badge/Download-Latest_Beta-D0BCFF?style=for-the-badge&logo=android&logoColor=black" alt="Download Latest Beta">
+<a href="https://github.com/SilverCipherr/Bread/releases/download/V2.4.7/Bread.2.4.7.apk">
+  <img src="https://img.shields.io/badge/⬇️_CLICK_HERE_TO_DOWNLOAD_APK ⬇️-Latest_Release-D0BCFF?style=for-the-badge&logo=android&logoColor=black" alt="Download Latest Release">
 </a>
 
 **Bread** is a high-end, privacy-focused personal finance manager for Android. Experience a cutting-edge interface that combines the elegance of iOS 17's glassmorphism with robust, offline-first security.
@@ -44,6 +44,7 @@ Switch between different accounts or family members seamlessly. Each profile mai
 ### 🛡️ Privacy First
 
 Your data belongs to you. Bread is fully offline-first.
+
 - **No Login Required**: Start managing your finances immediately. No Google sign-in or registration is required to access any of the app's features.
 - **Integrated Security**: Secure your information with local PIN and Biometric (Fingerprint/Face) authentication.
 - **Seamless Cloud Backup**: Bread leverages Android's system-level Auto Backup. Your data is encrypted and backed up to your personal Google Drive, allowing for easy restoration on new devices without compromising your privacy. It may need at least  24 hours for Google to auto sync the new data when the device is connected to Wi-Fi, charging or idle.

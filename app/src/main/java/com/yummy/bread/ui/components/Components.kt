@@ -24,6 +24,8 @@ import com.yummy.bread.data.Transaction
 import com.yummy.bread.ui.navigation.Screen
 import com.yummy.bread.data.TransactionType
 import com.yummy.bread.ui.theme.*
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.runtime.CompositionLocalProvider
 
 @Composable
 fun GlassCard(
@@ -31,12 +33,16 @@ fun GlassCard(
     shape: RoundedCornerShape = RoundedCornerShape(24.dp),
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .glassPanel(shape = shape)
-            .padding(20.dp),
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalContentColor provides MaterialTheme.colorScheme.onSurface
+    ) {
+        Column(
+            modifier = modifier
+                .glassPanel(shape = shape)
+                .padding(20.dp),
+            content = content
+        )
+    }
 }
 
 @Composable
@@ -69,24 +75,24 @@ fun TransactionItem(transaction: Transaction, currencySymbol: String) {
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(Primary.copy(alpha = 0.2f)),
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
-                        tint = Primary,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(transaction.category, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge, color = Color.White)
+                    Text(transaction.category, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
                     if (transaction.note.isNotBlank()) {
                         Text(
                             transaction.note,
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.White.copy(alpha = 0.7f)
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                         )
                     }
                 }
@@ -100,7 +106,7 @@ fun TransactionItem(transaction: Transaction, currencySymbol: String) {
                     fontWeight = FontWeight.Bold,
                     color = amountColor
                 )
-                Text(transaction.date, style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.5f))
+                Text(transaction.date, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
             }
         }
     }
@@ -117,7 +123,7 @@ fun MoltenButton(
             .clip(CircleShape)
             .background(
                 Brush.horizontalGradient(
-                    colors = listOf(Primary, PrimaryContainer)
+                    colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primaryContainer)
                 )
             )
             .clickable(onClick = onClick)
@@ -126,7 +132,7 @@ fun MoltenButton(
     ) {
         Text(
             text = text,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp
         )
@@ -149,13 +155,13 @@ fun LiquidProgressBar(
                 Text(
                     text = "Budget Target",
                     style = MaterialTheme.typography.labelLarge,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = remainingText,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.7f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
             }
             Text(
@@ -171,7 +177,7 @@ fun LiquidProgressBar(
                 .height(24.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f))
-                .border(1.dp, Color.White.copy(alpha = 0.05f), CircleShape)
+                .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.05f), CircleShape)
         ) {
             Box(
                 modifier = Modifier
@@ -180,10 +186,10 @@ fun LiquidProgressBar(
                     .clip(CircleShape)
                     .background(
                         Brush.horizontalGradient(
-                            colors = listOf(Primary, PrimaryContainer)
+                            colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primaryContainer)
                         )
                     )
-                    .border(1.dp, Color.White.copy(alpha = 0.2f), CircleShape)
+                    .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.2f), CircleShape)
             ) {
                 // Specular highlight
                 Box(
@@ -236,7 +242,7 @@ private fun NavItem(
         modifier = Modifier
             .clip(CircleShape)
             .then(
-                if (isSelected) Modifier.background(Primary.copy(alpha = 0.2f)).border(1.dp, Primary.copy(alpha = 0.3f), CircleShape)
+                if (isSelected) Modifier.background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)).border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), CircleShape)
                 else Modifier
             )
             .clickable(onClick = onClick)
@@ -246,13 +252,13 @@ private fun NavItem(
         Icon(
             imageVector = icon,
             contentDescription = label,
-            tint = if (isSelected) Primary else MaterialTheme.colorScheme.onSurfaceVariant,
+            tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(24.dp)
         )
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = if (isSelected) Primary else MaterialTheme.colorScheme.onSurfaceVariant,
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 4.dp)
         )
     }

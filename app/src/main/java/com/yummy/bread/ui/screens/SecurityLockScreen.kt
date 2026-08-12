@@ -94,8 +94,8 @@ fun SecurityLockScreen(
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.05f))
-                        .border(1.dp, Color.White.copy(alpha = 0.1f), CircleShape),
+                        .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.05f))
+                        .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.1f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     if (profile.pictureUri != null) {
@@ -110,7 +110,7 @@ fun SecurityLockScreen(
                             Icons.Default.Person,
                             contentDescription = null,
                             modifier = Modifier.size(50.dp),
-                            tint = Color.White.copy(alpha = 0.5f)
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                         )
                     }
                 }
@@ -125,7 +125,7 @@ fun SecurityLockScreen(
                 Text(
                     profile.name,
                     style = MaterialTheme.typography.displayLarge,
-                    color = Primary,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -143,8 +143,8 @@ fun SecurityLockScreen(
                         modifier = Modifier
                             .size(16.dp)
                             .clip(CircleShape)
-                            .background(if (filled) Primary else Color.White.copy(alpha = 0.1f))
-                            .border(1.dp, if (filled) Primary else Color.White.copy(alpha = 0.2f), CircleShape)
+                            .background(if (filled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f))
+                            .border(1.dp, if (filled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.2f), CircleShape)
                     )
                 }
             }
@@ -203,14 +203,14 @@ fun KeypadButton(
         modifier = modifier
             .height(64.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White.copy(alpha = 0.05f))
+            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.05f))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         when (key) {
-            "Delete" -> Icon(Icons.AutoMirrored.Filled.Backspace, contentDescription = "Clear", tint = Color.White)
-            "Fingerprint" -> Icon(Icons.Default.Fingerprint, contentDescription = "Biometric", tint = Primary)
-            else -> Text(key, fontSize = 28.sp, color = Color.White, fontWeight = FontWeight.Medium)
+            "Delete" -> Icon(Icons.AutoMirrored.Filled.Backspace, contentDescription = "Clear", tint = MaterialTheme.colorScheme.onSurface)
+            "Fingerprint" -> Icon(Icons.Default.Fingerprint, contentDescription = "Biometric", tint = MaterialTheme.colorScheme.primary)
+            else -> Text(key, fontSize = 28.sp, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium)
         }
     }
 }

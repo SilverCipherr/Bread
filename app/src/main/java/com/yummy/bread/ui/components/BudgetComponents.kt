@@ -23,6 +23,7 @@ import com.yummy.bread.data.CategoryBudget
 import com.yummy.bread.ui.theme.Primary
 import com.yummy.bread.ui.theme.PrimaryContainer
 import com.yummy.bread.ui.theme.Tertiary
+import com.yummy.bread.ui.theme.VibrantRed
 
 @Composable
 fun TotalBudgetSummaryCard(
@@ -49,7 +50,7 @@ fun TotalBudgetSummaryCard(
                 Text(
                     "$symbol${spent.toInt()}",
                     style = MaterialTheme.typography.displayLarge,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     " / $symbol${total.toInt()}",
@@ -67,7 +68,7 @@ fun TotalBudgetSummaryCard(
                     .fillMaxWidth()
                     .height(16.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.05f))
+                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.05f))
             ) {
                 Box(
                     modifier = Modifier
@@ -76,7 +77,7 @@ fun TotalBudgetSummaryCard(
                         .clip(CircleShape)
                         .background(
                             Brush.horizontalGradient(
-                                colors = listOf(Primary, Tertiary)
+                                colors = listOf(MaterialTheme.colorScheme.primary, Tertiary)
                             )
                         )
                 )
@@ -91,13 +92,13 @@ fun TotalBudgetSummaryCard(
                 Text(
                     "${(progress * 100).toInt()}% Spent",
                     style = MaterialTheme.typography.labelSmall,
-                    color = Primary,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     "$symbol${(total - spent).coerceAtLeast(0.0).toInt()} Left",
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color.White.copy(alpha = 0.7f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -142,17 +143,17 @@ fun CategoryBudgetCard(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.1f)),
+                            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(icon, contentDescription = null, tint = progressColor, modifier = Modifier.size(20.dp))
                     }
-                    Text(budget.category, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(budget.category, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                 }
                 
                 Column(horizontalAlignment = Alignment.End) {
-                    Text("$symbol${budget.spent.toInt()}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text("of $symbol${budget.limit.toInt()}", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.6f))
+                    Text("$symbol${budget.spent.toInt()}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                    Text("of $symbol${budget.limit.toInt()}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                 }
             }
             
@@ -162,7 +163,7 @@ fun CategoryBudgetCard(
                     .fillMaxWidth()
                     .height(8.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.05f))
+                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.05f))
             ) {
                 Box(
                     modifier = Modifier
@@ -171,9 +172,9 @@ fun CategoryBudgetCard(
                         .clip(CircleShape)
                         .background(
                             if (budget.isOverBudget) {
-                                Brush.horizontalGradient(listOf(Primary, Color(0xFFFFB4AB)))
+                                Brush.horizontalGradient(listOf(MaterialTheme.colorScheme.primary, Color(0xFFFFB4AB)))
                             } else {
-                                Brush.horizontalGradient(listOf(Primary, Tertiary))
+                                Brush.horizontalGradient(listOf(MaterialTheme.colorScheme.primary, Tertiary))
                             }
                         )
                 )
@@ -190,7 +191,7 @@ fun CategoryBudgetCard(
             
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onDeleteClick, modifier = Modifier.size(32.dp)) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete Budget", tint = Color.Gray.copy(alpha = 0.6f), modifier = Modifier.size(16.dp))
+                    Icon(Icons.Default.Delete, contentDescription = "Delete Budget", tint = VibrantRed, modifier = Modifier.size(16.dp))
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 TextButton(onClick = onEditClick, modifier = Modifier.height(32.dp)) {

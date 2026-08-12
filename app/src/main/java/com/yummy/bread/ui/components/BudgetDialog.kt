@@ -76,13 +76,13 @@ fun BudgetDialog(
                 Text(
                     text = if (isEditing) "Edit Budget" else "Set New Budget",
                     style = MaterialTheme.typography.headlineMedium,
-                    color =Color(0xFFffffff)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 if (!isEditing) {
                     // Category Picker
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        Text("SELECT CATEGORY", style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.6f))
+                        Text("SELECT CATEGORY", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                         Spacer(modifier = Modifier.height(16.dp))
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(4),
@@ -100,14 +100,14 @@ fun BudgetDialog(
                                         modifier = Modifier
                                             .size(44.dp)
                                             .clip(CircleShape)
-                                            .background(if (isSelected) Primary else Color.White.copy(alpha = 0.05f))
-                                            .border(1.dp, if (isSelected) Primary else Color.White.copy(alpha = 0.1f), CircleShape),
+                                            .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.05f))
+                                            .border(1.dp, if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.1f), CircleShape),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Icon(
                                             cat.icon,
                                             contentDescription = null,
-                                            tint = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f),
+                                            tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                                             modifier = Modifier.size(20.dp)
                                         )
                                     }
@@ -115,7 +115,7 @@ fun BudgetDialog(
                                     Text(
                                         cat.name, 
                                         style = MaterialTheme.typography.labelSmall, 
-                                        color = if (isSelected) Primary else Color.White.copy(alpha = 0.7f),
+                                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                                         maxLines = 1
                                     )
                                 }
@@ -137,9 +137,9 @@ fun BudgetDialog(
                             contentAlignment = Alignment.Center
                         ) {
                             val cat = categories.find { it.name == selectedCategory }
-                            Icon(cat?.icon ?: Icons.Default.Category, contentDescription = null, tint = Primary)
+                            Icon(cat?.icon ?: Icons.Default.Category, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                         }
-                        Text(selectedCategory, style = MaterialTheme.typography.headlineSmall, color = Color.White)
+                        Text(selectedCategory, style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onSurface)
                     }
                 }
 
@@ -147,16 +147,16 @@ fun BudgetDialog(
                 TextField(
                     value = limit,
                     onValueChange = { if (it.all { c -> c.isDigit() || it == "." }) limit = it },
-                    label = { Text("Monthly Limit", color = Color.White.copy(alpha = 0.6f)) },
-                    prefix = { Text("$currencySymbol ", color = Color.White) },
+                    label = { Text("Monthly Limit", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)) },
+                    prefix = { Text("$currencySymbol ", color = MaterialTheme.colorScheme.onSurface) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     colors = TextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedContainerColor = Color.White.copy(alpha = 0.05f),
-                        unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
-                        focusedIndicatorColor = Primary,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        focusedContainerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.05f),
+                        unfocusedContainerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.05f),
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                         unfocusedIndicatorColor = Color.Transparent
                     )
                 )
@@ -169,7 +169,7 @@ fun BudgetDialog(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Cancel", color = Color.White.copy(alpha = 0.6f))
+                        Text("Cancel", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                     }
                     Button(
                         onClick = {
@@ -179,11 +179,11 @@ fun BudgetDialog(
                                 onConfirm(selectedCategory, limitVal, icon)
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Primary),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Text("Confirm", color = Color.White, fontWeight = FontWeight.Bold)
+                        Text("Confirm", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
                     }
                 }
             }

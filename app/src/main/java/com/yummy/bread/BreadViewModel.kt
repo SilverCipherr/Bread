@@ -56,9 +56,9 @@ class BreadViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val categoryColors = mapOf(
-        "Food" to Primary,
-        "Transport" to Secondary,
-        "Shopping" to Tertiary,
+        "Food" to Color(0xFFBAB0FF),
+        "Transport" to Color(0xFFADC6FF),
+        "Shopping" to Color(0xFF4EDEA3),
         "Utilities" to Color(0xFFFFA726),
         "Invest" to Color(0xFF66BB6A),
         "Gift" to Color(0xFFEC407A),

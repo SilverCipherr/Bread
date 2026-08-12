@@ -29,6 +29,7 @@ import com.yummy.bread.ui.navigation.Screen
 import com.yummy.bread.ui.theme.Background
 import com.yummy.bread.ui.theme.Primary
 import com.yummy.bread.ui.theme.Secondary
+import com.yummy.bread.ui.theme.VibrantRed
 
 @Composable
 fun SettingsScreen(
@@ -53,7 +54,7 @@ fun SettingsScreen(
         Text(
             "Settings",
             style = MaterialTheme.typography.displayLarge,
-            color = Primary
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -72,8 +73,8 @@ fun SettingsScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape)
-                            .background(Color.DarkGray)
-                            .border(2.dp, Primary.copy(alpha = 0.5f), CircleShape),
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .border(2.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         if (uiState.profilePictureUri != null) {
@@ -84,19 +85,19 @@ fun SettingsScreen(
                                 contentScale = ContentScale.Crop
                             )
                         } else {
-                            Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(50.dp), tint = Color.Gray)
+                            Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(50.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
                         }
                     }
                     Surface(
                         onClick = onNavigateToProfileSetup,
                         shape = CircleShape,
-                        color = Primary,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(32.dp)
                             .align(Alignment.BottomEnd)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Icon(Icons.Default.Edit, contentDescription = "Edit Profile", modifier = Modifier.size(16.dp), tint = Color.Black)
+                            Icon(Icons.Default.Edit, contentDescription = "Edit Profile", modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onPrimary)
                         }
                     }
                 }
@@ -104,7 +105,7 @@ fun SettingsScreen(
                 Text(
                     text = if (uiState.userName.isBlank()) "Jane Doe" else uiState.userName,
                     style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -133,13 +134,13 @@ fun SettingsScreen(
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
-                                .background(Secondary.copy(alpha = 0.2f)),
+                                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(Icons.Default.AccountBalance, contentDescription = null, tint = Secondary, modifier = Modifier.size(20.dp))
+                            Icon(Icons.Default.AccountBalance, contentDescription = null, tint = MaterialTheme.colorScheme.secondary, modifier = Modifier.size(20.dp))
                         }
                         Column {
-                            Text("Primary", style = MaterialTheme.typography.bodyMedium, color = Color.White)
+                            Text("Primary", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                             Text("$symbol${uiState.totalBalance}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
@@ -152,7 +153,7 @@ fun SettingsScreen(
                 onClick = onNavigateToAddAccount,
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.1f))
             ) {
                 Icon(Icons.Default.AddCircle, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.width(8.dp))
@@ -179,7 +180,7 @@ fun SettingsScreen(
                     checked = uiState.isDarkMode ?: androidx.compose.foundation.isSystemInDarkTheme(),
                     onCheckedChange = { viewModel.setDarkMode(it) }
                 )
-                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), color = Color.White.copy(alpha = 0.05f))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.05f))
                 
                 // 2. Security & Privacy
                 SettingsItem(
@@ -187,7 +188,7 @@ fun SettingsScreen(
                     label = "2. Security & Privacy",
                     onClick = onNavigateToSecurity
                 )
-                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), color = Color.White.copy(alpha = 0.05f))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.05f))
                 
                 // 3. About
                 SettingsItem(
@@ -206,8 +207,8 @@ fun SettingsScreen(
                 .fillMaxWidth()
                 .height(60.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFF93000A).copy(alpha = 0.2f))
-                .border(1.dp, Color(0xFF93000A).copy(alpha = 0.3f), RoundedCornerShape(16.dp))
+                .background(VibrantRed.copy(alpha = 0.1f))
+                .border(1.dp, VibrantRed.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
                 .clickable { 
                     viewModel.logout()
                     onLogout()
@@ -215,8 +216,8 @@ fun SettingsScreen(
             contentAlignment = Alignment.Center
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Icon(Icons.Default.Logout, contentDescription = null, tint = Color(0xFFFFB4AB))
-                Text("Log Out", color = Color(0xFFFFB4AB), fontWeight = FontWeight.Bold)
+                Icon(Icons.Default.Logout, contentDescription = null, tint = VibrantRed)
+                Text("Log Out", color = VibrantRed, fontWeight = FontWeight.Bold)
             }
         }
 
@@ -244,12 +245,12 @@ fun SettingsItem(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.05f)),
+                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.05f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(icon, contentDescription = null, tint = Primary, modifier = Modifier.size(20.dp))
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
             }
-            Text(label, style = MaterialTheme.typography.bodyLarge, color = Color.White)
+            Text(label, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             if (value != null) {
@@ -279,21 +280,21 @@ fun SettingsItemToggle(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.05f)),
+                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.05f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(icon, contentDescription = null, tint = Primary, modifier = Modifier.size(20.dp))
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
             }
-            Text(label, style = MaterialTheme.typography.bodyLarge, color = Color.White)
+            Text(label, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
         }
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
             colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = Primary,
+                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                checkedTrackColor = MaterialTheme.colorScheme.primary,
                 uncheckedThumbColor = Color.Gray,
-                uncheckedTrackColor = Color.White.copy(alpha = 0.1f),
+                uncheckedTrackColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
                 uncheckedBorderColor = Color.Transparent
             )
         )

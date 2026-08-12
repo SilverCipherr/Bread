@@ -56,14 +56,14 @@ fun SecurityPrivacyScreen(onBack: () -> Unit) {
             Icon(
                 Icons.Default.Lock,
                 contentDescription = null,
-                tint = Primary,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(64.dp).align(Alignment.CenterHorizontally)
             )
             
             Text(
                 "Offline-First Privacy",
                 style = MaterialTheme.typography.headlineMedium,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
@@ -116,18 +116,18 @@ fun AboutScreen(onBack: () -> Unit) {
             Icon(
                 Icons.Default.Info,
                 contentDescription = null,
-                tint = Primary,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(80.dp)
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
                 "Bread",
                 style = MaterialTheme.typography.displayLarge,
-                color = Primary,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                "Version 2.3.1-beta",
+                "Version 2.4.7",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -135,14 +135,14 @@ fun AboutScreen(onBack: () -> Unit) {
             Text(
                 "Created by SilverCipherr",
                 style = MaterialTheme.typography.labelLarge,
-                color = Primary.copy(alpha = 0.8f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                 fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
                 "Your daily dough, managed better.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onSurface
             )
             
             Spacer(modifier = Modifier.height(40.dp))
@@ -166,7 +166,7 @@ fun AboutScreen(onBack: () -> Unit) {
                     Text(
                         "Follow us",
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -178,8 +178,8 @@ fun AboutScreen(onBack: () -> Unit) {
 @Composable
 private fun InfoSection(title: String, description: String) {
     Column {
-        Text(title, style = MaterialTheme.typography.titleMedium, color = Primary, fontWeight = FontWeight.Bold)
+        Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(4.dp))
-        Text(description, style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.7f))
+        Text(description, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
     }
 }

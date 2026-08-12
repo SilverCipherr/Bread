@@ -52,13 +52,13 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Color.White,
     tertiaryContainer = Color(0xFFFFD8E4),
     onTertiaryContainer = Color(0xFF31111D),
-    background = Color(0xFFFFFBFE),
+    background = LightBackground,
     onBackground = Color(0xFF1C1B1F),
-    surface = Color(0xFFFFFBFE),
+    surface = LightBackground,
     onSurface = Color(0xFF1C1B1F),
     surfaceVariant = Color(0xFFE7E0EC),
     onSurfaceVariant = Color(0xFF49454F),
-    outline = Color(0xFF79747E),
+    outline = LightOutline,
     outlineVariant = Color(0xFFCAC4D0),
     error = Color(0xFFB3261E),
     onError = Color.White,
@@ -66,12 +66,40 @@ private val LightColorScheme = lightColorScheme(
     onErrorContainer = Color(0xFF410E0B)
 )
 
+data class GlassColors(
+    val glows: List<Color>,
+    val glassTint: Color,
+    val background: Color
+)
+
+val LocalGlassColors = androidx.compose.runtime.staticCompositionLocalOf {
+    GlassColors(
+        glows = listOf(Glow1, Glow2, Glow3, Glow4),
+        glassTint = GlassColor,
+        background = Background
+    )
+}
+
 @Composable
 fun BreadTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val glassColors = if (darkTheme) {
+        GlassColors(
+            glows = listOf(Glow1, Glow2, Glow3, Glow4),
+            glassTint = GlassColor,
+            background = Background
+        )
+    } else {
+        GlassColors(
+            glows = listOf(LightGlow1, LightGlow2, LightGlow3, LightGlow4),
+            glassTint = LightGlassColor,
+            background = LightBackground
+        )
+    }
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -84,9 +112,13 @@ fun BreadTheme(
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    androidx.compose.runtime.CompositionLocalProvider(
+        LocalGlassColors provides glassColors
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }
