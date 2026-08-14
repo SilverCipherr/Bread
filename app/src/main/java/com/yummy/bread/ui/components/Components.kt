@@ -24,6 +24,7 @@ import com.yummy.bread.data.Transaction
 import com.yummy.bread.ui.navigation.Screen
 import com.yummy.bread.data.TransactionType
 import com.yummy.bread.ui.theme.*
+import com.yummy.bread.ui.DateUtils
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.CompositionLocalProvider
 
@@ -106,7 +107,11 @@ fun TransactionItem(transaction: Transaction, currencySymbol: String) {
                     fontWeight = FontWeight.Bold,
                     color = amountColor
                 )
-                Text(transaction.date, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
+                Text(
+                    text = DateUtils.formatTransactionDate(transaction.timestamp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                )
             }
         }
     }

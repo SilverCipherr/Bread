@@ -240,7 +240,7 @@ fun AddTransactionScreen(
                                 title = selectedCategory,
                                 category = selectedCategory,
                                 amount = amountVal,
-                                date = "Today",
+                                date = com.yummy.bread.ui.DateUtils.formatTransactionDate(System.currentTimeMillis()),
                                 type = type,
                                 note = note,
                                 timestamp = System.currentTimeMillis()
